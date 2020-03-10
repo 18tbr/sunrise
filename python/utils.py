@@ -1,6 +1,7 @@
 # coding: utf8
 
 import numpy as np
+print(">> Loading module: 'utils'...")
 
 
 # PARTIE 1 : DISCRETISATION DE LA TRAJECTOIRE #
