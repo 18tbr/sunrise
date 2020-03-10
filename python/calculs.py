@@ -4,6 +4,8 @@ import numpy as np
 import objects as obj
 print(">> Main .py file...")
 
+### VARIABLES
+
 # Hangar
 hangar_x = 1.25
 hangar_y = 1.25
@@ -12,8 +14,22 @@ hangar_z = 1
 mobile_x = .25
 mobile_y = .25
 mobile_z = .3
+
 # Trajectoire
 var_trajectoire = np.random.rand(10, 6)
+# Pas maximaux que l'on s'autorise
+pas_translation_x = 0.01
+pas_translation_y = 0.01
+pas_translation_z = 0.01
+pas_rotation_alpha = 3.14/180
+pas_rotation_beta = 3.14/180
+pas_rotation_gamma = 3.14/180
+
+
+### DISPLAY
+dim6d = ['x ', 'y ', 'z ', 'alpha', 'beta ', 'gamma']
+typedim = ['translation', 'rotation']
+unite = ['m', 'rad']
 
 
 # 1. DISCRETISATION
@@ -145,14 +161,22 @@ if __name__ == '__main__':
     # Trajectoire
     trajectoire = var_trajectoire
 
-    # Hangar
+    # Hangar and mobile
     dimensions_hangar = np.array([hangar_x, hangar_y, hangar_z])
-    print("Dimensions du hangar : %s" % dimensions_hangar)
-    hangar = obj.Hangar(dimensions_hangar)
-
-    # Mobile
     dimensions_mobile = np.array([mobile_x, mobile_y, mobile_z])
+    print("Dimensions du hangar : %s" % dimensions_hangar)
     print("Dimensions du mobile : %s" % dimensions_mobile)
+    hangar = obj.Hangar(dimensions_hangar)
     mobile = obj.Mobile(dimensions_mobile)
 
-    # Main
+    # vecteur des pas maximaux que l'on s'autorise
+    pas_maximal = np.array([pas_translation_x, pas_translation_y,
+                            pas_translation_z, pas_rotation_alpha,
+                            pas_rotation_beta, pas_rotation_gamma])
+    for dim in range(6):
+        print("Pas de %s %s : %.3f %s" % (typedim[dim//3],
+                                          dim6d[dim],
+                                          pas_maximal[dim],
+                                          unite[dim//3]
+                                          ))
+    # Test de la discrétisation
