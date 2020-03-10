@@ -27,6 +27,7 @@ pas_rotation_gamma = 3.14/180
 
 
 ### DISPLAY
+display = True
 dim6d = ['x ', 'y ', 'z ', 'alpha', 'beta ', 'gamma']
 typedim = ['translation', 'rotation']
 unite = ['m', 'rad']
@@ -164,8 +165,6 @@ if __name__ == '__main__':
     # Hangar and mobile
     dimensions_hangar = np.array([hangar_x, hangar_y, hangar_z])
     dimensions_mobile = np.array([mobile_x, mobile_y, mobile_z])
-    print("Dimensions du hangar : %s" % dimensions_hangar)
-    print("Dimensions du mobile : %s" % dimensions_mobile)
     hangar = obj.Hangar(dimensions_hangar)
     mobile = obj.Mobile(dimensions_mobile)
 
@@ -173,10 +172,16 @@ if __name__ == '__main__':
     pas_maximal = np.array([pas_translation_x, pas_translation_y,
                             pas_translation_z, pas_rotation_alpha,
                             pas_rotation_beta, pas_rotation_gamma])
-    for dim in range(6):
-        print("Pas de %s %s : %.3f %s" % (typedim[dim//3],
-                                          dim6d[dim],
-                                          pas_maximal[dim],
-                                          unite[dim//3]
-                                          ))
+
+    if display:
+        print("Dimensions du hangar : %s" % dimensions_hangar)
+        print("Dimensions du mobile : %s" % dimensions_mobile)
+        print("Trajectoire :\n", trajectoire)
+        for dim in range(6):
+            print("Pas de %s %s : %.3f %s" % (typedim[dim//3],
+                                              dim6d[dim],
+                                              pas_maximal[dim],
+                                              unite[dim//3]
+                                              ))
+
     # Test de la discrétisation
