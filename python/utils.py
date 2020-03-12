@@ -52,7 +52,7 @@ def plot_trajectoire(trajectoire, what):
     fig = plt.figure("Trajectoire")
     fig.suptitle('Trajectoire ' + what)
     # 3d graph
-    ax = fig.add_subplot(121, projection='3d')
+    ax = fig.add_subplot(111, projection='3d')
     xdata = trajectoire[:, 0]
     ydata = trajectoire[:, 1]
     zdata = trajectoire[:, 2]
