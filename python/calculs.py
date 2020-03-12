@@ -2,6 +2,7 @@
 
 import numpy as np
 import objects as obj
+import utils as utils
 print(">> Main .py file...")
 
 ### VARIABLES
@@ -177,6 +178,7 @@ if __name__ == '__main__':
         print("Dimensions du hangar : %s" % dimensions_hangar)
         print("Dimensions du mobile : %s" % dimensions_mobile)
         print("Trajectoire :\n", trajectoire)
+        utils.plot_trajectoire(trajectoire)
         for dim in range(6):
             print("Pas de %s %s : %.3f %s" % (typedim[dim//3],
                                               dim6d[dim],

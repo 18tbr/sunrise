@@ -1,6 +1,8 @@
 # coding: utf8
 
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 print(">> Loading module: 'utils'...")
 
 
@@ -44,3 +46,18 @@ def rotation(angular_vect):
                    [0, 0, 1]])
 
     return np.dot(np.dot(Rx, Ry), Rz)
+
+
+def plot_trajectoire(trajectoire):
+    xdata = trajectoire[:, 0]
+    ydata = trajectoire[:, 1]
+    zdata = trajectoire[:, 2]
+    fig = plt.figure("Trajectoire")
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot3D(xdata, ydata, zdata)
+    ax.scatter3D(xdata, ydata, zdata)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    ax.set_title('Trajectoire souhaitée')
+    plt.show()
