@@ -48,16 +48,19 @@ def rotation(angular_vect):
     return np.dot(np.dot(Rx, Ry), Rz)
 
 
-def plot_trajectoire(trajectoire):
+def plot_trajectoire(trajectoire, what):
+    fig = plt.figure("Trajectoire")
+    fig.suptitle('Trajectoire ' + what)
+    # 3d graph
+    ax = fig.add_subplot(121, projection='3d')
     xdata = trajectoire[:, 0]
     ydata = trajectoire[:, 1]
     zdata = trajectoire[:, 2]
-    fig = plt.figure("Trajectoire")
-    ax = fig.add_subplot(111, projection='3d')
     ax.plot3D(xdata, ydata, zdata)
     ax.scatter3D(xdata, ydata, zdata)
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
-    ax.set_title('Trajectoire souhaitée')
+    # Table
+    # To do
     plt.show()

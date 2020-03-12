@@ -2,7 +2,8 @@
 
 import numpy as np
 import objects as obj
-import utils as utils
+import utils
+import math
 print(">> Main .py file...")
 
 ### VARIABLES
@@ -54,7 +55,18 @@ def calcul_pas_adapte(trajectoire, pas_maximal):
     :return: Vecteur de taille 9 des pas pour chaque intervalle
     :rtype: np.array
     """
-    pass
+    intervalles = len(trajectoire) - 1
+    nombre_pas = np.zeros(intervalles, dtype=int)
+
+    for j in range(intervalles):
+        # j parcourt les intervalles imposés par la trajectoire
+        nombre_pas_detail = np.zeros(6)
+        for dim in range(6):
+            # dim décrit les 6 dimensions
+            nombre_pas_detail[dim] = abs(trajectoire[j+1][dim] -
+                                         trajectoire[j][dim]) / pas_maximal[dim]
+        nombre_pas[j] = math.ceil(np.amax(nombre_pas_detail))
+    return nombre_pas
 
 
 def discretisation_trajectoire(trajectoire, pas_maximal):
@@ -178,7 +190,7 @@ if __name__ == '__main__':
         print("Dimensions du hangar : %s" % dimensions_hangar)
         print("Dimensions du mobile : %s" % dimensions_mobile)
         print("Trajectoire :\n", trajectoire)
-        utils.plot_trajectoire(trajectoire)
+        utils.plot_trajectoire(trajectoire, 'souhaitée')
         for dim in range(6):
             print("Pas de %s %s : %.3f %s" % (typedim[dim//3],
                                               dim6d[dim],
@@ -187,3 +199,4 @@ if __name__ == '__main__':
                                               ))
 
     # Test de la discrétisation
+    traj_disc, var_disc = discretisation_trajectoire(trajectoire, pas_maximal)
