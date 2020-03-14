@@ -1,6 +1,7 @@
 # coding: utf8
 
 from utils import rotation, init_sommets
+import matplotlib.pyplot as plt
 print(">> Loading module: 'objects'...")
 
 
@@ -54,3 +55,32 @@ class Coord6d:
         cf reconstruction_coins
         """
         pass
+
+
+class Trajectoire:
+
+    def __init__(self, type, array):
+        self.type = type
+        self.array = array
+        pass
+
+    def display(self):
+        print("Trajectoire :\n", self.array)
+
+    def plot(self):
+        fig = plt.figure("Trajectoire")
+        fig.suptitle('Trajectoire ' + self.type)
+        # 3d graph
+        ax = fig.add_subplot(111, projection='3d')
+        xdata = self.array[:, 0]
+        ydata = self.array[:, 1]
+        zdata = self.array[:, 2]
+        ax.plot3D(xdata, ydata, zdata)
+        ax.scatter3D(xdata, ydata, zdata)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
+        # Table
+        # To do
+        fig.savefig('pics/trajectoire_{0}.png'.format(self.type))
+        plt.show()

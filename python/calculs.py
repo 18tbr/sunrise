@@ -4,8 +4,9 @@ import numpy as np
 import objects as obj
 import utils
 import math
-print(">> Main .py file...")
+import os
 
+print(">> Main .py file...")
 ### VARIABLES
 
 # Hangar
@@ -55,7 +56,8 @@ def calcul_pas_adapte(trajectoire, pas_maximal):
     :return: Vecteur de taille 9 des pas pour chaque intervalle
     :rtype: np.array
     """
-    nb_intervalles = len(trajectoire) - 1
+    assert trajectoire.type == "souhaitée"
+    nb_intervalles = len(trajectoire.array) - 1
     nombre_pas = np.zeros(nb_intervalles, dtype=int)
 
     for j in range(nb_intervalles):
@@ -63,8 +65,8 @@ def calcul_pas_adapte(trajectoire, pas_maximal):
         nombre_pas_detail = np.zeros(6)
         for dim in range(6):
             # dim décrit les 6 dimensions
-            nombre_pas_detail[dim] = abs(trajectoire[j+1][dim] -
-                                         trajectoire[j][dim]) / pas_maximal[dim]
+            nombre_pas_detail[dim] = abs(trajectoire.array[j+1][dim] -
+                                         trajectoire.array[j][dim]) / pas_maximal[dim]
         nombre_pas[j] = math.ceil(np.amax(nombre_pas_detail))
     return nombre_pas
 
@@ -89,8 +91,8 @@ def discretisation_trajectoire(trajectoire, pas_maximal):
     :return: Couple d'arrays
     :rtype: (np.array, np.array)
     """
-    nb_intervalles = len(trajectoire) - 1
     nombre_pas = calcul_pas_adapte(trajectoire, pas_maximal)
+    nb_intervalles = len(trajectoire.array) - 1
 
     traj_disc = np.empty((1, 6))
     var_disc = np.empty((1, 6))
@@ -99,20 +101,20 @@ def discretisation_trajectoire(trajectoire, pas_maximal):
         # pour chaque intervalle entre 2 points de la trajectoire souhaitée
         nb_pas_j = nombre_pas[j]
 
-        dx = (trajectoire[j+1][0] - trajectoire[j][0]) / nb_pas_j
-        dy = (trajectoire[j+1][1] - trajectoire[j][1]) / nb_pas_j
-        dz = (trajectoire[j+1][2] - trajectoire[j][2]) / nb_pas_j
-        dalpha = (trajectoire[j+1][3] - trajectoire[j][3]) / nb_pas_j
-        dbeta = (trajectoire[j+1][4] - trajectoire[j][4]) / nb_pas_j
-        dgamma = (trajectoire[j+1][5] - trajectoire[j][5]) / nb_pas_j
+        dx = (trajectoire.array[j+1][0] - trajectoire.array[j][0]) / nb_pas_j
+        dy = (trajectoire.array[j+1][1] - trajectoire.array[j][1]) / nb_pas_j
+        dz = (trajectoire.array[j+1][2] - trajectoire.array[j][2]) / nb_pas_j
+        dalpha = (trajectoire.array[j+1][3] - trajectoire.array[j][3]) / nb_pas_j
+        dbeta = (trajectoire.array[j+1][4] - trajectoire.array[j][4]) / nb_pas_j
+        dgamma = (trajectoire.array[j+1][5] - trajectoire.array[j][5]) / nb_pas_j
 
         for i in range(0, nb_pas_j):
-            x = trajectoire[j][0] + i * dx
-            y = trajectoire[j][1] + i * dy
-            z = trajectoire[j][2] + i * dz
-            alpha = trajectoire[j][3] + i * dalpha
-            beta = trajectoire[j][4] + i * dbeta
-            gamma = trajectoire[j][5] + i * dgamma
+            x = trajectoire.array[j][0] + i * dx
+            y = trajectoire.array[j][1] + i * dy
+            z = trajectoire.array[j][2] + i * dz
+            alpha = trajectoire.array[j][3] + i * dalpha
+            beta = trajectoire.array[j][4] + i * dbeta
+            gamma = trajectoire.array[j][5] + i * dgamma
 
             traj_disc = np.append(traj_disc,
                                   [[x, y, z, alpha, beta, gamma]],
@@ -204,7 +206,7 @@ def get_cable_var(mobile, trajectoire_disc, dimensions):
 if __name__ == '__main__':
 
     # Trajectoire
-    trajectoire = var_trajectoire
+    trajectoire = obj.Trajectoire("souhaitée", var_trajectoire)
 
     # Hangar and mobile
     dimensions_hangar = np.array([hangar_x, hangar_y, hangar_z])
@@ -220,6 +222,7 @@ if __name__ == '__main__':
     if display:
         print("Dimensions du hangar : %s" % dimensions_hangar)
         print("Dimensions du mobile : %s" % dimensions_mobile)
+        trajectoire.display()
         print("Trajectoire :\n", trajectoire)
         # utils.plot_trajectoire(trajectoire, 'souhaitée')
         for dim in range(6):
@@ -229,7 +232,9 @@ if __name__ == '__main__':
                                               unite[dim//3]
                                               ))
 
+
     # Test de la discrétisation
     nombre_pas = calcul_pas_adapte(trajectoire, pas_maximal)
     traj_disc, var_disc = discretisation_trajectoire(trajectoire, pas_maximal)
-    utils.plot_trajectoire(traj_disc, 'discrétisée')
+    trajectoire.plot()
+    # vérifier régularité des pas
