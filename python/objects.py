@@ -60,16 +60,25 @@ class Coord6d:
 class Trajectoire:
 
     def __init__(self, type, array):
+        """
+        Class constructor
+        """
         self.type = type
         self.array = array
         pass
 
     def display(self):
+        """
+        Display a trajectory
+        """
         print("Trajectoire :\n", self.array)
 
     def plot(self):
-        fig = plt.figure("Trajectoire")
-        fig.suptitle('Trajectoire ' + self.type)
+        """
+        Plot a trajectory
+        """
+        fig = plt.figure('Trajectoire {0}'.format(self.type))
+        fig.suptitle('Trajectoire {0}'.format(self.type))
         # 3d graph
         ax = fig.add_subplot(111, projection='3d')
         xdata = self.array[:, 0]
