@@ -5,15 +5,25 @@ import matplotlib.pyplot as plt
 print(">> Loading module: 'objects'...")
 
 
-class Mobile:
+class Objet3d:
 
     def __init__(self, dimensions):
         """
-        initializes a mobile
+        initializes a 3d object
         USING: - Coord6d
                - init_sommets
         """
         pass
+
+
+class Mobile(Objet3d):
+
+    def __init__(self, dimensions):
+        """
+        initializes a mobile
+        voir si l'on a besoin d'attributs supplémentaires
+        """
+        Objet3d.__init__(self, dimensions)
 
     def move(self, spatial, angular):
         """
@@ -24,14 +34,14 @@ class Mobile:
         pass
 
 
-class Hangar:
+class Hangar(Objet3d):
 
     def __init__(self, dimensions):
         """
         initializes the hangar
         USING: - Coord6d
         """
-        pass
+        Objet3d.__init__(self, dimensions)
 
 
 class Coord6d:
