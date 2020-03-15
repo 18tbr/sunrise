@@ -1,6 +1,7 @@
 # coding: utf8
 
 from utils import rotation, init_sommets
+import decorators as dec
 import matplotlib.pyplot as plt
 print(">> Loading module: 'objects'...")
 
