@@ -96,7 +96,7 @@ def discretisation_trajectoire(trajectoire, pas_maximal):
 
     traj_disc = np.empty((1, 6))
     var_disc = np.empty((1, 6))
-    print(traj_disc)
+    # print(traj_disc)
     for j in range(nb_intervalles):
         # pour chaque intervalle entre 2 points de la trajectoire souhaitée
         nb_pas_j = nombre_pas[j]
@@ -222,8 +222,7 @@ if __name__ == '__main__':
     if display:
         print("Dimensions du hangar : %s" % dimensions_hangar)
         print("Dimensions du mobile : %s" % dimensions_mobile)
-        trajectoire.display()
-        print("Trajectoire :\n", trajectoire)
+        print(trajectoire)
         # utils.plot_trajectoire(trajectoire, 'souhaitée')
         for dim in range(6):
             print("Pas de %s %s : %.3f %s" % (typedim[dim//3],

@@ -63,15 +63,22 @@ class Trajectoire:
         """
         Class constructor
         """
-        self.type = type
+        self._type = type  # Accessible uniquement en lecture
         self.array = array
         pass
 
-    def display(self):
+    @property
+    def type(self):
         """
-        Display a trajectory
+        Accéder en lecture à type
         """
-        print("Trajectoire :\n", self.array)
+        return self._type
+
+    def __str__(self):
+        """
+        Prettily display a trajectory
+        """
+        return "Trajectoire :\n" + str(self.array)
 
     def plot(self):
         """
@@ -91,5 +98,5 @@ class Trajectoire:
         ax.set_zlabel('z')
         # Table
         # To do
-        fig.savefig('pics/trajectoire_{0}.png'.format(self.type))
+        # fig.savefig('pics/trajectoire_{0}.png'.format(self.type))
         plt.show()
