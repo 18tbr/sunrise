@@ -3,6 +3,7 @@
 import numpy as np
 import objects as obj
 import utils
+import time
 import math
 import os
 
@@ -204,6 +205,7 @@ def get_cable_var(mobile, trajectoire_disc, dimensions):
 
 
 if __name__ == '__main__':
+    start_time = time.time()
 
     # Trajectoire
     trajectoire = obj.Trajectoire("souhaitée", var_trajectoire)
@@ -231,9 +233,17 @@ if __name__ == '__main__':
                                               unite[dim//3]
                                               ))
 
-
     # Test de la discrétisation
     nombre_pas = calcul_pas_adapte(trajectoire, pas_maximal)
     traj_disc, var_disc = discretisation_trajectoire(trajectoire, pas_maximal)
     trajectoire.plot()
     # vérifier régularité des pas
+
+    end_time = time.time()
+    print("\n*** End ***\n"
+          "Start: {0}\n"
+          "End: {1}\n"
+          "Time Elapsed: {2:.2f}s".format(
+            time.strftime("%Hh%Mm%Ss", time.localtime(start_time)),
+            time.strftime("%Hh%Mm%Ss", time.localtime(end_time)),
+            (end_time - start_time)))
