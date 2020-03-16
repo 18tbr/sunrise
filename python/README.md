@@ -1,9 +1,11 @@
 # groupeMath
-Le dépôt du groupe Math
 
-Structure:
+Math group repository.
 
-- `command.py`: main function, called by `cable_robot.py`;
-- `calculs.py`: discretisation and rotation computation;
+## Structure
+
+- `command.py`:
+- `calculs.py`: discretisation and motors rotation computation;
 - `objects.py`: classes;
-- `utils.py`: useful tools and functions.
+- `utils.py`: useful tools and functions;
+- `decorators.py`: decorators for a cleaner code.

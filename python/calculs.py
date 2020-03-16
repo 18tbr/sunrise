@@ -25,9 +25,9 @@ var_trajectoire = np.random.rand(10, 6)
 pas_translation_x = 0.01
 pas_translation_y = 0.01
 pas_translation_z = 0.01
-pas_rotation_alpha = 3.14/180
-pas_rotation_beta = 3.14/180
-pas_rotation_gamma = 3.14/180
+pas_rotation_alpha = math.radians(1)
+pas_rotation_beta = math.radians(1)
+pas_rotation_gamma = math.radians(1)
 
 
 ### DISPLAY
@@ -246,4 +246,4 @@ if __name__ == '__main__':
           "Time Elapsed: {2:.2f}s".format(
             time.strftime("%Hh%Mm%Ss", time.localtime(start_time)),
             time.strftime("%Hh%Mm%Ss", time.localtime(end_time)),
-            (end_time - start_time)))
+            end_time - start_time))
