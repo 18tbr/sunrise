@@ -9,3 +9,10 @@ Math group repository.
 - `objects.py`: classes;
 - `utils.py`: useful tools and functions;
 - `decorators.py`: decorators for a cleaner code.
+
+## Tests
+
+To run the tests, type in a terminal:
+```bash
+python -m unittest
+```
