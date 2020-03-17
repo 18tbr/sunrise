@@ -1,23 +1,43 @@
 # groupeMath
 Math group repository.
 
-## 1. How to
+## 1. How to...
 
-In a terminal:
+### 1.1 Get the latest codes
+
+In a terminal, eventually the `git terminal`:
 ```bash
 # go to your folder
 cd path/to/folder
 # get the latest version of the code
 git pull
 ```
-Then you can see and eventually modify the codes.
+
+### 1.2. Modify the code
+
+Then, in order to modify your codes, you are going to create a branch for you. It means that you are going to work on a version of the code wothout impacting the other branches.
+In order to do so:
+```bash
+git branch
+>> master
+>> classes
+# create the branch pierre
+git branch pierre
+# go on the branch pierre
+git checkout pierre
+```
+Then you can modify the codes.
+You only need to do this once. Then, you'll automatically be on the `pierre` branch (you can see it in the terminal between brackets), so no need to type this.
+
+### 1.3. Push the codes
+
 Once you are done, if you want to push the changes you made, type:
 ```bash
 git add .
 git commit -m "Message describing the changes"
 git push
 ```
-The changes you made are now on GitHub.
+The changes you made are now on GitHub, on the branch that you previously created.
 Don't forget to `git pull` each time you want to work on the codes!
 
 ## 2. Structure
