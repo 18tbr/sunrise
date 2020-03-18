@@ -1,9 +1,21 @@
 # groupeMath
 Math group repository.
 
-## 1. How to...
+## Table of contents
 
-### 1.1 Get the latest codes
+1. [ How to ](#1-how-to)
+    1.1. [ Get the latest codes ](#21-get-the-latest-codes)
+    1.2. [ Modify the code ](#21-modify-the-code)
+    1.3. [ Push the codes ](#21-push-the-codes)
+2. [ Structure ](#2-structure)
+3. [ Coding conventions ](#3-coding-conventions)
+    3.1. [ Documenting and commenting ](#31-documenting-and-commenting)
+4. [ Tests ](#4-tests)
+5. [ Pics ](#5-pics)
+
+## 1. How to
+
+### 1.1. Get the latest codes
 
 In a terminal, eventually the `git terminal`:
 ```bash
@@ -46,11 +58,12 @@ Don't forget to `git pull` each time you want to work on the codes!
 - `calculs.py`: discretisation and motors rotation computation, main script;
 - `cli.py`:
 - `command.py`:
-- `decorators.py`: decorators for a cleaner code, it is ok if you don't look at it;
 - `gen.py`:
 - `groupeMathSquelette`: this script is outdated, was a previous version of `calculs.py`;
-- `objects.py`: classes needed for the `calculs.py` script;
-- `utils.py`: useful tools and functions.
+- `modules`:
+    - `decorators.py`: decorators for a cleaner code, it is ok if you don't look at it;
+    - `objects.py`: classes needed for the `calculs.py` script;
+    - `utils.py`: useful tools and functions.
 
 
 ### 2.1. `calculs.py`
@@ -58,19 +71,38 @@ Don't forget to `git pull` each time you want to work on the codes!
 We want to compute the number of steps in which we are going to divide each interval of the trajectory.
 For each interval, this number is
 `max(ceil(L_i/dx_i)_i)`
-where i in [|1,6|] is the dimension, `L_i` is the distance we want to do in the interval and `dx_i` is the maximum step authorized.
+where `i` in `[|1,6|]` is the dimension, `L_i` is the distance we want to do in the interval and `dx_i` is the maximum step authorized.
 
+## 3. Coding conventions
 
-## Tests
+### 3.1. Documenting and commenting
 
-- `test/`: folder where the unittests are stored.
+When a function is defined, we document it as follows:
+```py
+def fun(arg):
+    """
+    Blabla
 
+    :param dimensions: blabla
+
+    :type dimensions: np.array
+
+    :return: blabla
+    :rtype: np.array
+    """
+    pass
+```
+
+## 4. Tests
+
+For now, no unittest has been implemented and the `.py` files in the `test/` folder are empty.
 To run the tests, type in a terminal:
 ```bash
 python -m unittest
 ```
 
-## 3. Pics
+## 5. Pics
 
 - motor numbering:
+
 ![Motor Numbering](./pics/motor-numbering.png)
