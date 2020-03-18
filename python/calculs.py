@@ -7,7 +7,7 @@ import time
 import math
 import os
 
-print(">> Main .py file...")
+print(">> Running calculs.py...")
 ### VARIABLES
 
 # Hangar
@@ -202,11 +202,7 @@ def get_cable_var(mobile, trajectoire_disc, dimensions):
     """
     pass
 
-def display1():
-    print("Dimensions du hangar : %s" % dimensions_hangar)
-    print("Dimensions du mobile : %s" % dimensions_mobile)
-    print(trajectoire)
-    # utils.plot_trajectoire(trajectoire, 'souhaitée')
+def display_pas():
     for dim in range(6):
         print("Pas de %s %s : %.3f %s" % (typedim[dim//3],
                                           dim6d[dim],
@@ -214,34 +210,42 @@ def display1():
                                           unite[dim//3]
                                           ))
 
-if __name__ == '__main__':
-    start_time = time.time()
 
-    # Trajectoire
-    trajectoire = obj.Trajectoire("souhaitee", var_trajectoire)
-    trajectoire.plot()
 
-    # Hangar and mobile
-    dimensions_hangar = np.array([hangar_x, hangar_y, hangar_z])
-    dimensions_mobile = np.array([mobile_x, mobile_y, mobile_z])
-    hangar = obj.Hangar(dimensions_hangar)
-    mobile = obj.Mobile(dimensions_mobile)
 
+### MAIN
+
+def main():
     # vecteur des pas maximaux que l'on s'autorise
     pas_maximal = np.array([pas_translation_x, pas_translation_y,
                             pas_translation_z, pas_rotation_alpha,
                             pas_rotation_beta, pas_rotation_gamma])
-
     if display:
-        display1()
+        display_pas()
 
-    # Test de la discrétisation
+    # Trajectoire
+    trajectoire = obj.Trajectoire("souhaitee", var_trajectoire)
+    # trajectoire.plot()
+
+
     nombre_pas = calcul_nb_steps(trajectoire, pas_maximal)
     traj_disc = obj.Trajectoire("discretisee", discretisation_trajectoire(trajectoire, pas_maximal)[0])
-    print(traj_disc)
-    traj_disc.plot()
-    # vérifier régularité des pas
 
+    # Hangar and mobile
+    dimensions_hangar = np.array([hangar_x, hangar_y, hangar_z])
+    dimensions_mobile = np.array([mobile_x, mobile_y, mobile_z])
+    hangar = obj.Hangar("Hangar", dimensions_hangar)
+    mobile = obj.Mobile("Mobile", dimensions_mobile)
+    print(hangar)
+    print(mobile)
+    mobile.move([1,1,1],[0,2,0])
+    print(mobile)
+
+
+
+if __name__ == '__main__':
+    start_time = time.time()
+    main()
     end_time = time.time()
     print("\n*** End ***\n"
           "Start: {0}\n"

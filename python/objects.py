@@ -1,6 +1,6 @@
 # coding: utf8
 
-from utils import rotation, init_sommets
+from utils import rotation, pos_to_sommets
 import decorators as dec
 import matplotlib.pyplot as plt
 print(">> Loading module: 'objects'...")
@@ -8,71 +8,110 @@ print(">> Loading module: 'objects'...")
 
 class Objet3d:
 
-    def __init__(self, dimensions):
+    def __init__(self, name, dimensions):
         """
-        initializes a 3d object
-        USING: - Coord6d
-               - init_sommets
+        Initialize an Objet3d.
         """
-        pass
+        self.name = name
+        self.position = Coord6d([0,0,0,0,0,0])
+        self.dimensions = dimensions
+        self.sommets = pos_to_sommets(self.position, self.dimensions)
+
+    def __str__(self):
+        """
+        Prettily display an Objet3d.
+        """
+        str_dim = "| > Dimensions: {}\n".format(self.dimensions)
+        str_pos = "| > Position: {}\n|             {}\n".format(
+                  self.position.spatial, self.position.angular)
+        str_sommets = "| > Sommets:\n"
+        for sommet in self.sommets:
+            str_sommets += '|   '
+            str_sommets += str(sommet) + '\n'
+        return "\n| {}:\n{}{}{}".format(self.name, str_dim, str_pos, str_sommets)
 
 
 class Mobile(Objet3d):
 
-    def __init__(self, dimensions):
+    def __init__(self, name, dimensions):
         """
-        initializes a mobile
-        voir si l'on a besoin d'attributs supplémentaires
+        Initialize a mobile.
         """
-        Objet3d.__init__(self, dimensions)
+        Objet3d.__init__(self, name, dimensions)
 
     def move(self, spatial, angular):
         """
-        moves the mobile
-        USING: - change_spatial
-               - change_angular
+        Move a mobile.
         """
-        pass
+        self.position.change_spatial(spatial)
+        self.position.change_angular(angular)
+        self.sommets = pos_to_sommets(self.position, self.dimensions)
 
 
 class Hangar(Objet3d):
 
-    def __init__(self, dimensions):
+    def __init__(self, name, dimensions):
         """
-        initializes the hangar
-        USING: - Coord6d
+        Initialize a hangar.
         """
-        Objet3d.__init__(self, dimensions)
+        Objet3d.__init__(self, name, dimensions)
 
 
 class Coord6d:
 
-    def __init__(self, x=0, y=0, z=0, alpha=0, beta=0, gamma=0):
+    def __init__(self, coord=[0,0,0,0,0,0]):
         """
-        initializes the 6 coordinates
+        Initialize a Coord6d object.
         """
+        x, y, z, alpha, beta, gamma = coord
+        self.x = x
+        self.y = y
+        self.z = z
+        self.spatial = [x, y, z]
+
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
+        self.angular = [alpha, beta, gamma]
 
     def change_spatial(self, spatial):
         """
-        change the angular coordinates
-        cf reconstruction_coins
+        Change the spatial coordinates.
         """
-        pass
+        self.spatial = spatial
+        self.x, self.y, self.z = spatial
 
     def change_angular(self, angular):
         """
-        change the angular coordinates
-        USING: - rotation
-        cf reconstruction_coins
+        Change the angular coordinates.
         """
-        pass
+        self.angular = angular
+        self.alpha, self.beta, self.gamme = angular
+
+
+class Coord3d:
+
+    def __init__(self, coord=[0,0,0]):
+        """
+        Initialize a Coord3d object.
+        """
+        x, y, z = coord
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def __str__(self):
+        """
+        Prettily display a Coord3d object.
+        """
+        return "({0:.3f}, {1:.3f}, {2:.3f})".format(self.x, self.y, self.z)
 
 
 class Trajectoire:
 
     def __init__(self, type, array):
         """
-        Class constructor
+        Class constructor.
         """
         self._type = type  # Accessible uniquement en lecture
         self.array = array

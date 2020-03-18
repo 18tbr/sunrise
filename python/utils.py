@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import objects as obj
 print(">> Loading module: 'utils'...")
 
 
@@ -23,8 +24,10 @@ def init_sommets(dimensions):
 def pos_to_sommets(position, dimensions):
     sommets = init_sommets(dimensions)
     for sommet in range(8):
-        sommets[sommet] = np.dot(rotation(position.angle), sommets[sommet])\
+        sommets[sommet] = np.dot(rotation(position.angular), sommets[sommet])\
                           + position.spatial
+    sommets = [obj.Coord3d(sommet) for sommet in sommets]
+    # print(sommets[0])
     return sommets
 
 
