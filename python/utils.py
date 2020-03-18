@@ -7,9 +7,9 @@ import objects as obj
 print(">> Loading module: 'utils'...")
 
 
-# PARTIE 1 : DISCRETISATION DE LA TRAJECTOIRE #
+# PART 1 : TRAJECTORY DISCRETIZATION #
 
-def init_sommets(dimensions):
+def init_vertices(dimensions):
     lx, ly, lz = dimensions
     return np.array([[lx/2, -ly/2, -lz/2],
                      [lx/2, -ly/2, lz/2],
@@ -21,14 +21,13 @@ def init_sommets(dimensions):
                      [-lx/2, -ly/2, lz/2]])
 
 
-def pos_to_sommets(position, dimensions):
-    sommets = init_sommets(dimensions)
-    for sommet in range(8):
-        sommets[sommet] = np.dot(rotation(position.angular), sommets[sommet])\
+def pos_to_vertices(position, dimensions):
+    vertices = init_vertices(dimensions)
+    for vertex in range(8):
+        vertices[vertex] = np.dot(rotation(position.angular), vertices[vertex])\
                           + position.spatial
-    sommets = [obj.Coord3d(sommet) for sommet in sommets]
-    # print(sommets[0])
-    return sommets
+    vertices = [obj.Coord3d(vertex) for vertex in vertices]
+    return vertices
 
 
 def rotation(angular_vect):
@@ -49,22 +48,3 @@ def rotation(angular_vect):
                    [0, 0, 1]])
 
     return np.dot(np.dot(Rx, Ry), Rz)
-
-
-# def plot_trajectoire(trajectoire, what):
-#     fig = plt.figure("Trajectoire")
-#     fig.suptitle('Trajectoire ' + what)
-#     # 3d graph
-#     ax = fig.add_subplot(111, projection='3d')
-#     xdata = trajectoire[:, 0]
-#     ydata = trajectoire[:, 1]
-#     zdata = trajectoire[:, 2]
-#     ax.plot3D(xdata, ydata, zdata)
-#     ax.scatter3D(xdata, ydata, zdata)
-#     ax.set_xlabel('x')
-#     ax.set_ylabel('y')
-#     ax.set_zlabel('z')
-#     # Table
-#     # To do
-#     fig.savefig('pics/trajectoire_{0}.png'.format(what))
-#     plt.show()

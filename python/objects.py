@@ -1,34 +1,34 @@
 # coding: utf8
 
-from utils import rotation, pos_to_sommets
+from utils import rotation, pos_to_vertices
 import decorators as dec
 import matplotlib.pyplot as plt
 print(">> Loading module: 'objects'...")
 
 
-class Objet3d:
+class Object3d:
 
     def __init__(self, name, dimensions):
         """
-        Initialize an Objet3d.
+        Object3d class constructor.
         """
         self._name = name
         self._position = Coord6d([0,0,0,0,0,0])
         self._dimensions = dimensions
-        self.sommets = pos_to_sommets(self._position, self._dimensions)
+        self.vertices = pos_to_vertices(self._position, self._dimensions)
 
     def __str__(self):
         """
-        Prettily display an Objet3d.
+        Prettily display an Object3d.
         """
         str_dim = "| > Dimensions: {}\n".format(self.dimensions)
         str_pos = "| > Position: {}\n|             {}\n".format(
                   self.position.spatial, self.position.angular)
-        str_sommets = "| > Sommets:\n"
-        for sommet in self.sommets:
-            str_sommets += '|   '
-            str_sommets += str(sommet) + '\n'
-        return "\n| {}:\n{}{}{}".format(self.name, str_dim, str_pos, str_sommets)
+        str_vertices = "| > Vertices:\n"
+        for vertex in self.vertices:
+            str_vertices += '|   '
+            str_vertices += str(vertex) + '\n'
+        return "\n| {}:\n{}{}{}".format(self.name, str_dim, str_pos, str_vertices)
 
     @property
     def position(self):
@@ -43,11 +43,11 @@ class Objet3d:
         return self._name
 
 
-class Mobile(Objet3d):
+class Mobile(Object3d):
 
     def __init__(self, name, dimensions):
         """
-        Initialize a mobile.
+        Mobile class constructor.
         """
         Objet3d.__init__(self, name, dimensions)
 
@@ -57,24 +57,49 @@ class Mobile(Objet3d):
         """
         # change position
         self.position.move(destination)
-        # refresh the sommets
-        self.sommets = pos_to_sommets(self.position, self.dimensions)
+        # refresh the vertices
+        self.vertices = pos_to_vertices(self.position, self.dimensions)
 
 
-class Hangar(Objet3d):
+class Hangar(Object3d):
 
     def __init__(self, name, dimensions):
         """
-        Initialize a hangar.
+        Hangar class constructor.
         """
         Objet3d.__init__(self, name, dimensions)
+
+
+class Coord3d:
+
+    def __init__(self, coord=[0,0,0]):
+        """
+        Coord3d class constructor.
+        """
+        x, y, z = coord
+        self.x = x
+        self.y = y
+        self.z = z
+        self.spatial = [x, y, z]
+
+    def __str__(self):
+        """
+        Prettily display a Coord3d object.
+        """
+        return "({0:.3f}, {1:.3f}, {2:.3f})".format(self.x, self.y, self.z)
+
+    def move(self, destination):
+        """
+        Change the coordinates.
+        """
+        self.__init__(destination)
 
 
 class Coord6d:
 
     def __init__(self, coord=[0,0,0,0,0,0]):
         """
-        Initialize a Coord6d object.
+        Coord6d class constructor.
         """
         x, y, z, alpha, beta, gamma = coord
         self.x = x
@@ -114,54 +139,27 @@ class Coord6d:
     #     self.alpha, self.beta, self.gamme = angular
 
 
-
-class Coord3d:
-
-    def __init__(self, coord=[0,0,0]):
-        """
-        Initialize a Coord3d object.
-        """
-        x, y, z = coord
-        self.x = x
-        self.y = y
-        self.z = z
-        self.spatial = [x, y, z]
-
-    def __str__(self):
-        """
-        Prettily display a Coord3d object.
-        """
-        return "({0:.3f}, {1:.3f}, {2:.3f})".format(self.x, self.y, self.z)
-
-    def move(self, destination):
-        """
-        Change the coordinates.
-        """
-        self.__init__(destination)
-
-
-class Trajectoire:
+class Trajectory:
 
     def __init__(self, name, array):
         """
-        Class constructor.
+        Trajectory class constructor.
         """
-        self._name = name  # Accessible uniquement en lecture
+        self._name = name  # Reading access only
         self.array = array
-        pass
 
     @property
     def name(self):
         """
-        Accéder en lecture à name
+        Reading access to name.
         """
         return self._name
 
     def __str__(self):
         """
-        Prettily display a trajectory
+        Prettily display a trajectory.
         """
-        return "Trajectoire :\n" + str(self.array)
+        return "Trajectory :\n" + str(self.array)
 
     def dx(self, nb_steps, j):
         return (self.array[j+1][0] - self.array[j][0]) / nb_steps[j]
@@ -183,10 +181,10 @@ class Trajectoire:
 
     def plot(self):
         """
-        Plot a trajectory
+        Plot a trajectory.
         """
-        fig = plt.figure('Trajectoire {0}'.format(self.name))
-        fig.suptitle('Trajectoire {0}'.format(self.name))
+        fig = plt.figure('{0} trajectory'.format(self.name))
+        fig.suptitle('{0} trajectory'.format(self.name))
         # 3d graph
         ax = fig.add_subplot(111, projection='3d')
         xdata = self.array[:, 0]
