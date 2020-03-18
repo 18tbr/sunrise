@@ -52,7 +52,16 @@ Don't forget to `git pull` each time you want to work on the codes!
 - `objects.py`: classes needed for the `calculs.py` script;
 - `utils.py`: useful tools and functions.
 
-### Tests
+
+### 2.1. `calculs.py`
+
+We want to compute the number of steps in which we are going to divide each interval of the trajectory.
+For each interval, this number is
+`max(ceil(L_i/dx_i)_i)`
+where i in [|1,6|] is the dimension, `L_i` is the distance we want to do in the interval and `dx_i` is the maximum step authorized.
+
+
+## Tests
 
 - `test/`: folder where the unittests are stored.
 

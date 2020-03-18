@@ -1,4 +1,5 @@
 import unittest
+import numpy as np
 
 
 class CalculsTest(unittest.TestCase):
@@ -9,6 +10,11 @@ class CalculsTest(unittest.TestCase):
     def setUp(self):
         """
         Tests initialization.
+        """
+
+    def test_nombrepas(self):
+        """
+        Tests function 'calculsnombrepas'.
         """
         pass
 
