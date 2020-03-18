@@ -60,7 +60,7 @@ def calcul_nb_steps(trajectoire, pas_maximal):
     :return: Vecteur de taille 9 des pas pour chaque intervalle
     :rtype: np.array
     """
-    assert trajectoire.type == "souhaitee"
+    assert trajectoire.name == "souhaitee"
 
     def calcul_nb_steps_interval(trajectoire, j):
         """Compute the number of steps for one interval"""
@@ -234,14 +234,16 @@ def main():
     # Hangar and mobile
     dimensions_hangar = np.array([hangar_x, hangar_y, hangar_z])
     dimensions_mobile = np.array([mobile_x, mobile_y, mobile_z])
-    hangar = obj.Hangar("Hangar", dimensions_hangar)
+    # hangar = obj.Hangar("Hangar", dimensions_hangar)
     mobile = obj.Mobile("Mobile", dimensions_mobile)
-    print(hangar)
+    # print(hangar)
     print(mobile)
-    mobile.move([1,1,1],[0,2,0])
+    mobile.move([1,1,1,0,2,0])
     print(mobile)
 
-
+    # print(mobile.name)
+    # mobile.position = obj.Coord6d()
+    # print(mobile.position)
 
 if __name__ == '__main__':
     start_time = time.time()
