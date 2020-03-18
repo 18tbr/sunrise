@@ -1,14 +1,14 @@
 # coding: utf8
 
 import numpy as np
-import objects as obj
-import utils
 import time
 import math
-import os
+
+import modules.objects as obj
 
 print(">> Running calculs.py...")
-### VARIABLES
+
+# VARIABLES #
 
 # Hangar
 hangar_x = 1.25
@@ -35,10 +35,10 @@ max_step_beta = math.radians(10)
 max_step_gamma = math.radians(10)
 # array
 max_step = np.array([max_step_x, max_step_y, max_step_z,
-                        max_step_alpha, max_step_beta, max_step_gamma])
+                     max_step_alpha, max_step_beta, max_step_gamma])
 
 
-### DISPLAY
+# DISPLAY #
 display = False
 dim6d = ['x ', 'y ', 'z ', 'alpha', 'beta ', 'gamma']
 typedim = ['translation', 'rotation']
@@ -94,8 +94,8 @@ def discretize_traj(trajectory, max_step):
     Discretize the trajectory by cutting intervals into constant valued steps,
     of value inferior to max_step.
     Return 2 lists:
-    1. the list of the points in space (6D) we have to go through. It is useless
-    for the motors but it will be useful to plot the trajectory;
+    1. the list of the points in space (6D) we have to go through. It is
+    useless for the motors but it will be useful to plot the trajectory;
     2. the list of the infinitesimal moves we need to do to go from a point to
     another.
 
@@ -212,6 +212,7 @@ def get_cable_var(mobile, trajectory_disc, dimensions):
     """
     pass
 
+
 def display_pas():
     for dim in range(6):
         print("Pas de %s %s : %.3f %s" % (typedim[dim//3],
@@ -221,9 +222,7 @@ def display_pas():
                                           ))
 
 
-
-
-### MAIN
+# MAIN #
 
 def main():
     # trajectory

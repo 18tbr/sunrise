@@ -1,8 +1,8 @@
 # coding: utf8
 
-from utils import rotation, pos_to_vertices
-import decorators as dec
+from modules.utils import pos_to_vertices
 import matplotlib.pyplot as plt
+
 print(">> Loading module: 'objects'...")
 
 
