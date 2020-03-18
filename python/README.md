@@ -3,12 +3,12 @@ Math group repository.
 
 ## Table of contents
 
-1. [ How to ](#1-how-to)
-    1.1. [ Get the latest codes ](#21-get-the-latest-codes)
-    1.2. [ Modify the code ](#21-modify-the-code)
-    1.3. [ Push the codes ](#21-push-the-codes)
+1. [ How to ](#1-how-to)  
+    1.1. [ Get the latest codes ](#11-get-the-latest-codes)  
+    1.2. [ Modify the code ](#12-modify-the-code)  
+    1.3. [ Push the codes ](#13-push-the-codes)
 2. [ Structure ](#2-structure)
-3. [ Coding conventions ](#3-coding-conventions)
+3. [ Coding conventions ](#3-coding-conventions)  
     3.1. [ Documenting and commenting ](#31-documenting-and-commenting)
 4. [ Tests ](#4-tests)
 5. [ Pics ](#5-pics)
