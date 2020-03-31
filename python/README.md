@@ -55,11 +55,12 @@ Don't forget to `git pull` each time you want to work on the codes!
 ## 2. Structure
 
 - `cable_robot.py`:
-- `calculs.py`: discretisation and motors rotation computation, main script;
+- `calculs.py`: 
 - `cli.py`:
-- `command.py`:
+- `command.py`: discretisation and motors rotation computation, main script;
 - `gen.py`:
-- `groupeMathSquelette`: this script is outdated, was a previous version of `calculs.py`;
+- `mathPartie1`: this script is deprecated, was a previous version of `calculs.py`;
+- `groupeMathSquelette`: this script is deprecated, was a previous version of `calculs.py`;
 - `modules`:
     - `decorators.py`: decorators for a cleaner code, it is ok if you don't look at it;
     - `objects.py`: classes needed for the `calculs.py` script;

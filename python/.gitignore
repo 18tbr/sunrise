@@ -2,3 +2,4 @@ traj*
 __pycache__
 template.py
 *.pyc
+display.txt

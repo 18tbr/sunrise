@@ -1,21 +1,20 @@
 # coding: utf8
 
-from modules.utils import pos_to_vertices
+import modules.utils as utils
 import matplotlib.pyplot as plt
 
-print(">> Loading module: 'objects'...")
 
+class Object3d(object):
 
-class Object3d:
-
-    def __init__(self, name, dimensions):
+    def __init__(self, name, dimensions, *args, **kwargs):
         """
         Object3d class constructor.
         """
+        super().__init__(*args, **kwargs)
         self._name = name
-        self._position = Coord6d([0,0,0,0,0,0])
+        self._position = Coord6d([0, 0, 0, 0, 0, 0])
         self._dimensions = dimensions
-        self.vertices = pos_to_vertices(self._position, self._dimensions)
+        self.vertices = [Coord3d(vertex) for vertex in utils.pos_to_vertices(self.position, self.dimensions)]
 
     def __str__(self):
         """
@@ -34,6 +33,17 @@ class Object3d:
     def position(self):
         return self._position
 
+    @position.setter
+    def position(self, destination):
+        """
+        Move a mobile.
+        """
+        # change position
+        self.position.move(destination)
+        # refresh the vertices
+        self.vertices = [Coord3d(vertex) for vertex in utils.pos_to_vertices(self.position, self.dimensions)]
+        print('{} has moved!'.format(self.name))
+
     @property
     def dimensions(self):
         return self._dimensions
@@ -45,42 +55,33 @@ class Object3d:
 
 class Mobile(Object3d):
 
-    def __init__(self, name, dimensions):
+    def __init__(self, dimensions, *args, **kwargs):
         """
         Mobile class constructor.
         """
-        Objet3d.__init__(self, name, dimensions)
-
-    def move(self, destination):
-        """
-        Move a mobile.
-        """
-        # change position
-        self.position.move(destination)
-        # refresh the vertices
-        self.vertices = pos_to_vertices(self.position, self.dimensions)
+        super().__init__("Mobile", dimensions, *args, **kwargs)
 
 
 class Hangar(Object3d):
 
-    def __init__(self, name, dimensions):
+    def __init__(self, dimensions, *args, **kwargs):
         """
         Hangar class constructor.
         """
-        Objet3d.__init__(self, name, dimensions)
+        super().__init__("Hangar", dimensions, *args, **kwargs)
 
 
-class Coord3d:
+class Coord3d(object):
 
-    def __init__(self, coord=[0,0,0]):
+    def __init__(self, coord=[0, 0, 0], *args, **kwargs):
         """
         Coord3d class constructor.
         """
+        super().__init__(*args, **kwargs)
         x, y, z = coord
         self.x = x
         self.y = y
         self.z = z
-        self.spatial = [x, y, z]
 
     def __str__(self):
         """
@@ -95,12 +96,13 @@ class Coord3d:
         self.__init__(destination)
 
 
-class Coord6d:
+class Coord6d(object):
 
-    def __init__(self, coord=[0,0,0,0,0,0]):
+    def __init__(self, coord=[0, 0, 0, 0, 0, 0], *args, **kwargs):
         """
         Coord6d class constructor.
         """
+        super().__init__(*args, **kwargs)
         x, y, z, alpha, beta, gamma = coord
         self.x = x
         self.y = y
@@ -139,44 +141,58 @@ class Coord6d:
     #     self.alpha, self.beta, self.gamme = angular
 
 
-class Trajectory:
+class Trajectory(object):
 
-    def __init__(self, name, array):
+    def __init__(self, array, max_step, *args, **kwargs):
         """
         Trajectory class constructor.
         """
-        self._name = name  # Reading access only
+        super().__init__(*args, **kwargs)
+        self.name = "Initial"
         self.array = array
-
-    @property
-    def name(self):
-        """
-        Reading access to name.
-        """
-        return self._name
+        self.max_step = max_step
 
     def __str__(self):
         """
         Prettily display a trajectory.
         """
-        return "Trajectory :\n" + str(self.array)
+        return "{} trajectory :\n".format(self.name) + str(self.array)
+
+    def discretize(self):
+        """
+        Disctretize a trajectory
+        """
+        self.array = utils.discretize_traj(self, self.max_step)[0]
+        self.name = "Discretized"
 
     def dx(self, nb_steps, j):
+        """Returns the infinitesimal distance along the x direction
+        for the j-th interval of self."""
         return (self.array[j+1][0] - self.array[j][0]) / nb_steps[j]
 
     def dy(self, nb_steps, j):
+        """Returns the infinitesimal distance along the y direction
+        for the j-th interval of self."""
         return (self.array[j+1][1] - self.array[j][1]) / nb_steps[j]
 
     def dz(self, nb_steps, j):
+        """Returns the infinitesimal distance along the z direction
+        for the j-th interval of self."""
         return (self.array[j+1][2] - self.array[j][2]) / nb_steps[j]
 
     def da(self, nb_steps, j):
+        """Returns the infinitesimal distance along the a direction
+        for the j-th interval of self."""
         return (self.array[j+1][3] - self.array[j][3]) / nb_steps[j]
 
     def db(self, nb_steps, j):
+        """Returns the infinitesimal distance along the b direction
+        for the j-th interval of self."""
         return (self.array[j+1][4] - self.array[j][4]) / nb_steps[j]
 
     def dg(self, nb_steps, j):
+        """Returns the infinitesimal distance along the g direction
+        for the j-th interval of self."""
         return (self.array[j+1][5] - self.array[j][5]) / nb_steps[j]
 
     def plot(self):
