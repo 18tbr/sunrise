@@ -27,23 +27,23 @@ git pull
 
 ### 1.2. Modify the code
 
-Then, in order to modify your codes, you are going to create a branch for you. It means that you are going to work on a version of the code wothout impacting the other branches.
+Then, in order to modify your codes, you are going to create a branch for you. It means that you are going to work on a version of the code without impacting the other branches.
 In order to do so:
 ```bash
 git branch
 >> master
 >> classes
-# create the branch pierre
-git branch pierre
-# go on the branch pierre
-git checkout pierre
+# create the branch <student_name>
+git branch <student_name>
+# go on the branch <student_name>
+git checkout <student_name>
 ```
 Then you can modify the codes.
-You only need to do this once. Then, you'll automatically be on the `pierre` branch (you can see it in the terminal between brackets), so no need to type this.
+You only need to do this once. Then, you'll automatically be on the `<student_name>` branch (you can see it in the terminal between brackets), so no need to type this.
 
 ### 1.3. Push the codes
 
-Once you are done, if you want to push the changes you made, type:
+Once you are done, if you want to push the changes you made, type (still on your branch):
 ```bash
 git add .
 git commit -m "Message describing the changes"
@@ -54,20 +54,25 @@ Don't forget to `git pull` each time you want to work on the codes!
 
 ## 2. Structure
 
-- `cable_robot.py`:
-- `calculs.py`: 
-- `cli.py`:
-- `command.py`: discretisation and motors rotation computation, main script;
-- `gen.py`:
-- `mathPartie1`: this script is deprecated, was a previous version of `calculs.py`;
-- `groupeMathSquelette`: this script is deprecated, was a previous version of `calculs.py`;
+- `gen.py`: trajectory generation
+- `cli.py`: command line interface for the user. Comes with a `help` functionality and the possibility to choose the trajectory.
+- `cable_robot.py`: test script so that the cli.py does not raise an error.
+- `command.py`: discretization and motors rotation computation, main script, called by `cli.py`;
 - `modules`:
     - `decorators.py`: decorators for a cleaner code, it is ok if you don't look at it;
-    - `objects.py`: classes needed for the `calculs.py` script;
-    - `utils.py`: useful tools and functions.
+    - `objects.py`: classes needed for the `command.py` script;
+    - `utils.py`: tools and mathematical functions used by `command.py`.
+- `mathPartie1`: deprecated, was a previous version of `command.py`;
+- `groupeMathSquelette`: deprecated, was a previous version of `command.py`;
 
 
-### 2.1. `calculs.py`
+### 2.1. `cli.py`
+To do
+### 2.2. `command.py`
+To do
+### 2.3. `objects.py`
+To do
+### 2.4. `utils.py`
 
 We want to compute the number of steps in which we are going to divide each interval of the trajectory.
 For each interval, this number is
