@@ -166,35 +166,35 @@ class Trajectory(object):
         self.array = utils.discretize_traj(self.array, self.max_step)[0]
         self.name = "Discretized"
 
-    def dx(self, nb_steps, j):
-        """Returns the infinitesimal distance along the x direction
-        for the j-th interval of self."""
-        return (self.array[j+1][0] - self.array[j][0]) / nb_steps[j]
+    # def dx(self, nb_steps, j):
+    #     """Returns the infinitesimal distance along the x direction
+    #     for the j-th interval of self."""
+    #     return (self.array[j+1][0] - self.array[j][0]) / nb_steps[j]
 
-    def dy(self, nb_steps, j):
-        """Returns the infinitesimal distance along the y direction
-        for the j-th interval of self."""
-        return (self.array[j+1][1] - self.array[j][1]) / nb_steps[j]
+    # def dy(self, nb_steps, j):
+    #     """Returns the infinitesimal distance along the y direction
+    #     for the j-th interval of self."""
+    #     return (self.array[j+1][1] - self.array[j][1]) / nb_steps[j]
 
-    def dz(self, nb_steps, j):
-        """Returns the infinitesimal distance along the z direction
-        for the j-th interval of self."""
-        return (self.array[j+1][2] - self.array[j][2]) / nb_steps[j]
+    # def dz(self, nb_steps, j):
+    #     """Returns the infinitesimal distance along the z direction
+    #     for the j-th interval of self."""
+    #     return (self.array[j+1][2] - self.array[j][2]) / nb_steps[j]
 
-    def da(self, nb_steps, j):
-        """Returns the infinitesimal distance along the a direction
-        for the j-th interval of self."""
-        return (self.array[j+1][3] - self.array[j][3]) / nb_steps[j]
+    # def da(self, nb_steps, j):
+    #     """Returns the infinitesimal distance along the a direction
+    #     for the j-th interval of self."""
+    #     return (self.array[j+1][3] - self.array[j][3]) / nb_steps[j]
 
-    def db(self, nb_steps, j):
-        """Returns the infinitesimal distance along the b direction
-        for the j-th interval of self."""
-        return (self.array[j+1][4] - self.array[j][4]) / nb_steps[j]
+    # def db(self, nb_steps, j):
+    #     """Returns the infinitesimal distance along the b direction
+    #     for the j-th interval of self."""
+    #     return (self.array[j+1][4] - self.array[j][4]) / nb_steps[j]
 
-    def dg(self, nb_steps, j):
-        """Returns the infinitesimal distance along the g direction
-        for the j-th interval of self."""
-        return (self.array[j+1][5] - self.array[j][5]) / nb_steps[j]
+    # def dg(self, nb_steps, j):
+    #     """Returns the infinitesimal distance along the g direction
+    #     for the j-th interval of self."""
+    #     return (self.array[j+1][5] - self.array[j][5]) / nb_steps[j]
 
     def plot(self):
         """
