@@ -162,7 +162,8 @@ class Trajectory(object):
         """
         Disctretize a trajectory
         """
-        self.array = utils.discretize_traj(self, self.max_step)[0]
+        assert self.name == "Initial"
+        self.array = utils.discretize_traj(self.array, self.max_step)[0]
         self.name = "Discretized"
 
     def dx(self, nb_steps, j):

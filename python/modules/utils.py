@@ -47,7 +47,7 @@ def rotation(angular_vect):
     return np.dot(np.dot(Rx, Ry), Rz)
 
 
-def calcul_nb_steps(trajectory, max_step):
+def calcul_nb_steps(array, max_step):
     """
     For each interval of the trajectory, gives the number of steps into which
     we are going to discretize it.
@@ -59,15 +59,14 @@ def calcul_nb_steps(trajectory, max_step):
     :param trajectory: trajectory we want the mobile to follow
     :param max_step: maximal step for each dimension
 
-    :type trajectory: Trajectory()
+    :type array: np.array
     :type max_step: np.array (size 6)
 
     :return: number of steps into which each interval is discretized
     :rtype: list [ , , ...]
     """
-    assert trajectory.name == "Initial"
 
-    def calcul_nb_steps_interval(trajectory, j):
+    def calcul_nb_steps_interval(array, j):
         """
         Gives the number of steps to do for one interval j.
         At first, we compute the number of steps needed for each dimension
@@ -76,20 +75,20 @@ def calcul_nb_steps(trajectory, max_step):
         """
         nb_steps_dim = []
         for dim in range(6):
-            nb_steps_dim.append(abs(trajectory.array[j+1][dim] -
-                                    trajectory.array[j][dim]) / max_step[dim])
+            nb_steps_dim.append(abs(array[j+1][dim] -
+                                    array[j][dim]) / max_step[dim])
         return math.ceil(max(nb_steps_dim))
 
-    nb_interval = len(trajectory.array) - 1
+    nb_interval = len(array) - 1
     nb_steps = []
     for j in range(nb_interval):
-        nb_steps.append(calcul_nb_steps_interval(trajectory, j))
+        nb_steps.append(calcul_nb_steps_interval(array, j))
 
-    assert len(trajectory.array) - 1 == len(nb_steps)
+    assert len(array) - 1 == len(nb_steps)
     return nb_steps
 
 
-def discretize_traj(trajectory, max_step):
+def discretize_traj(array, max_step):
     """
     Discretize the trajectory by cutting intervals into constant valued steps,
     of value inferior to max_step.
@@ -99,37 +98,39 @@ def discretize_traj(trajectory, max_step):
     2. the list of the infinitesimal moves we need to do to go from a point to
     another.
 
-    :param trajectory: trajectory we want the mobile to follow
+    :param array: array attribute of the trajectory we want the mobile to
+    follow
     :param max_step: maximal step for each dimension
 
-    :type trajectory: Trajectory()
+    :type array: np.array
     :type max_step: np.array (size 6)
 
     :return: points we have to go through; infinitesimal moves
     :rtype: (list, list)
     """
-    nb_steps = calcul_nb_steps(trajectory, max_step)
-    nb_interval = len(trajectory.array) - 1
+    nb_steps = calcul_nb_steps(array, max_step)
+    nb_interval = len(array) - 1
 
     traj_disc = []
     var_disc = []
     for j in range(nb_interval):
         # for each interval between 2 points of the trajectory
-        dx = trajectory.dx(nb_steps, j)
-        dy = trajectory.dy(nb_steps, j)
-        dz = trajectory.dz(nb_steps, j)
-        da = trajectory.da(nb_steps, j)
-        db = trajectory.db(nb_steps, j)
-        dg = trajectory.dg(nb_steps, j)
+        nb_steps_j = nb_steps[j]
+        dx = (array[j+1][0] - array[j][0]) / nb_steps_j
+        dy = (array[j+1][1] - array[j][1]) / nb_steps_j
+        dz = (array[j+1][2] - array[j][2]) / nb_steps_j
+        da = (array[j+1][3] - array[j][3]) / nb_steps_j
+        db = (array[j+1][4] - array[j][4]) / nb_steps_j
+        dg = (array[j+1][5] - array[j][5]) / nb_steps_j
 
         for i in range(0, nb_steps[j]):
             # for each step
-            x = trajectory.array[j][0] + i * dx
-            y = trajectory.array[j][1] + i * dy
-            z = trajectory.array[j][2] + i * dz
-            a = trajectory.array[j][3] + i * da
-            b = trajectory.array[j][4] + i * db
-            g = trajectory.array[j][5] + i * dg
+            x = array[j][0] + i * dx
+            y = array[j][1] + i * dy
+            z = array[j][2] + i * dz
+            a = array[j][3] + i * da
+            b = array[j][4] + i * db
+            g = array[j][5] + i * dg
 
             traj_disc.append([x, y, z, a, b, g])
             var_disc.append([dx, dy, dz, da, db, dg])
