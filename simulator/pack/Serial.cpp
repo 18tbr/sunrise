@@ -81,7 +81,10 @@ int SerialClass::read() {
   }
 }
 
-void SerialClass::end() { close(this->sockfd); }
+void SerialClass::end() { 
+	close(this->connfd);
+	close(this->sockfd); 
+}
 
 size_t SerialClass::print(const char *msg) {
   // MSG_NOSIGNAL prevents send from killing the process in case of SIGPIPE
@@ -104,7 +107,7 @@ size_t SerialClass::print(int msg) {
     char *big = new char[count];
     snprintf(big, count, "%d", msg);
     bytes = send(this->connfd, big, count, MSG_NOSIGNAL);
-    delete big;
+    delete[] big;
   } else {
     // MSG_NOSIGNAL prevents send from killing the process in case of SIGPIPE
     bytes = send(this->connfd, &buffer, count, MSG_NOSIGNAL);
