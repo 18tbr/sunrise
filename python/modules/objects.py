@@ -17,23 +17,23 @@ class Parameters(object):
         Parameters class constructor.
         """
         # Hangar
-        self.hangar_x = 1.25
-        self.hangar_y = 1.25
-        self.hangar_z = 1
+        self.hangar_x = 125     # cm
+        self.hangar_y = 125
+        self.hangar_z = 100
         self.dimensions_hangar = np.array([self.hangar_x,
                                            self.hangar_y,
                                            self.hangar_z])
         # Mobile
-        self.mobile_x = .25
-        self.mobile_y = .25
-        self.mobile_z = .3
+        self.mobile_x = 25      # cm
+        self.mobile_y = 25
+        self.mobile_z = 30
         self.dimensions_mobile = np.array([self.mobile_x,
                                            self.mobile_y,
                                            self.mobile_z])
         # maximal steps authorized
-        self.max_step_x = .1
-        self.max_step_y = .1
-        self.max_step_z = .1
+        self.max_step_x = 1     # cm
+        self.max_step_y = 1
+        self.max_step_z = 1
         self.max_step_alpha = math.radians(10)
         self.max_step_beta = math.radians(10)
         self.max_step_gamma = math.radians(10)
@@ -45,7 +45,7 @@ class Parameters(object):
         self.display = False
         self.dim6d = ['x', 'y', 'z', 'alpha', 'beta', 'gamma']
         self.typedim = ['translation', 'rotation']
-        self.units = ['m', 'rad']
+        self.units = ['cm', 'rad']
 
 
     def __str__(self):
@@ -164,15 +164,15 @@ class Trajectory(object):
         Trajectory class constructor.
         """
         super().__init__(*args, **kwargs)
+        self.parameters = parameters
         # initial trajectory
         self.initial_traj = array
-        self.max_step = parameters.max_step
         # discretized trajectory
         self.discretized_traj_pos,\
-        self.discretized_traj_var = self.get_discretized(self.max_step)
+        self.discretized_traj_var = self.get_discretized()
         # cables
         self.cable_length,\
-        self.cable_var = self.get_cable(parameters)
+        self.cable_var = self.get_cable()
         # motor rotations
         self.motor_rotation = self.get_rotation()
 
@@ -189,20 +189,20 @@ class Trajectory(object):
         )
         return display
 
-    def get_discretized(self, max_step):
+    def get_discretized(self):
         """
         Discretize a trajectory
         """
-        return utils.discretize_traj(self.initial_traj, max_step)
+        return utils.discretize_traj(self.initial_traj, self.parameters.max_step)
 
-    def get_cable(self, parameters):
+    def get_cable(self):
         """
         Transform a discretized trajectory into the motor cable lengths
         """
         # return None, None
         return utils.disc_to_cable_length(self.discretized_traj_pos,
-                                          parameters.dimensions_mobile,
-                                          parameters.dimensions_hangar)
+                                          self.parameters.dimensions_mobile,
+                                          self.parameters.dimensions_hangar)
 
     def get_rotation(self):
         """
@@ -210,12 +210,11 @@ class Trajectory(object):
         """
         return None
 
-    def animate(self):
+    def animate(self, save):
         """
         Animate a trajectory
         """
         print("Animating...")
-        save = False
 
         def init():
             """
@@ -223,7 +222,9 @@ class Trajectory(object):
             """
             trajectory.set_data([], [])
             trajectory.set_3d_properties([])
-            return trajectory,
+
+            # graph.set_data([], [])
+            return trajectory, cable1, cable2, cable3, cable4, cable5, cable6, cable7, cable8
 
         def update_fig(i):
             """
@@ -231,18 +232,55 @@ class Trajectory(object):
             """
             trajectory.set_data(self.discretized_traj_pos[0:i+1, 0], self.discretized_traj_pos[0:i+1, 1])
             trajectory.set_3d_properties(self.discretized_traj_pos[0:i+1, 2])
-            return trajectory,
+            # print(self.cable_length[0:i+1, :])
+            # print(self.cable_length[0:i+1])
+            cable1.set_data(range(i+1), self.cable_length[0:i+1, 0])
+            cable2.set_data(range(i+1), self.cable_length[0:i+1, 1])
+            cable3.set_data(range(i+1), self.cable_length[0:i+1, 2])
+            cable4.set_data(range(i+1), self.cable_length[0:i+1, 3])
+            cable5.set_data(range(i+1), self.cable_length[0:i+1, 4])
+            cable6.set_data(range(i+1), self.cable_length[0:i+1, 5])
+            cable7.set_data(range(i+1), self.cable_length[0:i+1, 6])
+            cable8.set_data(range(i+1), self.cable_length[0:i+1, 7])
+            return trajectory, cable1, cable2, cable3, cable4, cable5, cable6, cable7, cable8
 
-        # setup
-        fig = plt.figure()
-        ax = p3.Axes3D(fig)
+        # SETUP
+        fig = plt.figure(figsize=(10,6))
+
+        # TRAJECTORY
+        ax = fig.add_subplot(1, 2, 1, projection='3d')
+        xlim_traj = self.parameters.dimensions_hangar[0]/2
+        ylim_traj = self.parameters.dimensions_hangar[1]/2
+        zlim_traj = self.parameters.dimensions_hangar[2]/2
+        ax.set_xlim3d((-xlim_traj, xlim_traj))
+        ax.set_ylim3d((-ylim_traj, ylim_traj))
+        ax.set_zlim3d((-zlim_traj, zlim_traj))
         trajectory, = ax.plot([], [], [], marker='')
+        # vector = ax.quiver([0], [0], [0], [0], [1], [1])
+
+        # CABLES
+        ax2 = fig.add_subplot(1, 2, 2)
+        plt.xlim((0, 1.5*len(self.cable_length)))
+        plt.ylim((0, 1.1*np.max(self.cable_length)))
+        cable1, = ax2.plot([], [], label="1st cable")
+        cable2, = ax2.plot([], [], label="2nd cable")
+        cable3, = ax2.plot([], [], label="3rd cable")
+        cable4, = ax2.plot([], [], label="4th cable")
+        cable5, = ax2.plot([], [], label="5th cable")
+        cable6, = ax2.plot([], [], label="6th cable")
+        cable7, = ax2.plot([], [], label="7th cable")
+        cable8, = ax2.plot([], [], label="8th cable")
+        plt.legend()
+
+
+        # SETUP
+        plt.tight_layout()
         anim = animation.FuncAnimation(fig, update_fig,
                                        frames=len(self.discretized_traj_pos),
-                                       interval=100,
+                                       interval=10,
                                        blit=True)
         # save and show
         if save:
             print("Saving gif...")
-            anim.save('trajectory.gif', fps=30)
+            anim.save('animation.gif', fps=30)
         plt.show()

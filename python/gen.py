@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 
-array = np.random.rand(10, 6)
+array = 10 * np.random.rand(10, 6)
 
 np.save("traj.npy", array)
 np.savetxt("traj.txt", array)
