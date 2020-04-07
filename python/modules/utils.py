@@ -21,8 +21,8 @@ def init_vertices(dimensions):
 def pos_to_vertices(position, dimensions):
     vertices = init_vertices(dimensions)
     for vertex in range(8):
-        vertices[vertex] = np.dot(rotation(position.angular), vertices[vertex])\
-                          + position.spatial
+        vertices[vertex] = np.dot(rotation(position[3:6]), vertices[vertex])\
+                          + position[0:3]
     # vertices = [obj.Coord3d(vertex) for vertex in vertices]
     return vertices
 
@@ -135,12 +135,13 @@ def discretize_traj(array, max_step):
             traj_disc.append([x, y, z, a, b, g])
             var_disc.append([dx, dy, dz, da, db, dg])
 
+    print("Trajectory is discretized")
     return np.array(traj_disc), np.array(var_disc)
 
 
 # PART 2: CABLE LENGTHS #
 
-def pos_to_cable_length(position):
+def pos_to_cable_length(position, dimensions_mobile, dimensions_hangar):
     """
     cf calcul_longueurs_cables
 
@@ -162,10 +163,21 @@ def pos_to_cable_length(position):
     :return: vecteur des longueurs des 8 câbles
     :rtype: np.array de taille 8
     """
-    pass
+    cable_length = np.zeros(8)
+    # cable are crossed
+    chg_num = [6, 7, 4, 5, 2, 3, 0, 1]
+    vertices_mobile = pos_to_vertices(position, dimensions_mobile)
+    vertices_hangar = pos_to_vertices([0, 0, 0, 0, 0, 0], dimensions_hangar)
+    # for each cable
+    for cable in range(8):
+        # get vector of the cable
+        cable_vector = vertices_mobile[chg_num[cable]] - vertices_hangar[cable]
+        # get norm of vector
+        cable_length[cable] = np.linalg.norm(cable_vector)
+    return cable_length
 
 
-def get_cable_var(mobile, trajectory_disc, dimensions):
+def disc_to_cable_length(discretized_traj, dimensions_mobile, dimensions_hangar):
     """
     cf commande_longueurs_cables
 
@@ -207,4 +219,23 @@ def get_cable_var(mobile, trajectory_disc, dimensions):
 
     USING: - pos_to_cable_length
     """
-    pass
+
+    nb_steps = len(discretized_traj)
+    nb_interval = nb_steps - 1
+    # cable length for each position
+
+    cable_length = []
+    cable_var = []
+    for j in range(nb_steps):
+        # get each cable length for j
+
+        cable_length.append(pos_to_cable_length(discretized_traj[j],
+                                                dimensions_mobile,
+                                                dimensions_hangar))
+
+    for j in range(nb_interval):
+        # get each cable variation for j
+        cable_var.append(cable_length[j+1] - cable_length[j])
+
+    print("Cable lengths computed")
+    return np.array(cable_length), np.array(cable_var)

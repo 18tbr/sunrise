@@ -1,10 +1,14 @@
 # coding: utf8
 
-import modules.utils as utils
-import matplotlib.pyplot as plt
-import numpy as np
 import math
+import numpy as np
+import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d.axes3d as p3
+import matplotlib.animation as animation
+import modules.utils as utils
 
+
+# PARAMETERS
 
 class Parameters(object):
 
@@ -67,16 +71,16 @@ class Parameters(object):
         """Display hangar parameters."""
         print("\nHangar:")
         for dim in range(3):
-            print("{}: {:.3f} m".format(self.dim6d[dim],
-                                        self.dimensions_hangar[dim]))
+            print(f"{self.dim6d[dim]}: {self.dimensions_hangar[dim]:.3f} m")
 
     def display_mobile(self):
         """Display mobile parameters."""
         print("\nMobile:")
         for dim in range(3):
-            print("{}: {:.3f} m".format(self.dim6d[dim],
-                                        self.dimensions_mobile[dim]))
+            print(f"{self.dim6d[dim]}: {self.dimensions_mobile[dim]:.3f} m")
 
+
+# 3D OBJECTS
 
 class Object3d(object):
 
@@ -86,21 +90,20 @@ class Object3d(object):
         """
         super().__init__(*args, **kwargs)
         self._name = name
-        self._position = Coord6d([0, 0, 0, 0, 0, 0])
+        self._position = np.array([0, 0, 0, 0, 0, 0])
         # self._dimensions = dimensions
 
     def __str__(self):
         """
         Prettily display an Object3d.
         """
-        str_dim = "| > Dimensions: {}\n".format(self.dimensions)
-        str_pos = "| > Position: {}\n|             {}\n".format(
-                  self.position.spatial, self.position.angular)
+        str_dim = f"| > Dimensions: {self.dimensions}\n"
+        str_pos = f"| > Position: {self.position[0:3]}\n|             {self.position[3:6]}\n"
         str_vertices = "| > Vertices:\n"
         for vertex in self.vertices:
             str_vertices += '|   '
             str_vertices += str(vertex) + '\n'
-        return "\n| {}:\n{}{}{}".format(self.name, str_dim, str_pos, str_vertices)
+        return f"\n| {self.name}:\n{str_dim}{str_pos}{str_vertices}"
 
     @property
     def position(self):
@@ -112,11 +115,10 @@ class Object3d(object):
         Move a mobile.
         """
         # change position
-        self.position.move(destination)
+        self._position = destination
         # refresh the vertices
-        self.vertices = [Coord3d(vertex) for vertex in utils.pos_to_vertices(self.position, self.dimensions)]
-        print('{} has moved!'.format(self.name))
-
+        self.vertices = utils.pos_to_vertices(self.position, self.dimensions)
+        print(f"{self.name} has moved!")
 
     @property
     def name(self):
@@ -131,7 +133,7 @@ class Mobile(Object3d):
         """
         super().__init__("Mobile", parameters, *args, **kwargs)
         self._dimensions = parameters.dimensions_mobile
-        self.vertices = [Coord3d(vertex) for vertex in utils.pos_to_vertices(self.position, self.dimensions)]
+        self.vertices = utils.pos_to_vertices(self.position, self.dimensions)
 
     @property
     def dimensions(self):
@@ -146,82 +148,14 @@ class Hangar(Object3d):
         """
         super().__init__("Hangar", parameters, *args, **kwargs)
         self._dimensions = parameters.dimensions_hangar
-        self.vertices = [Coord3d(vertex) for vertex in utils.pos_to_vertices(self.position, self.dimensions)]
+        self.vertices = utils.pos_to_vertices(self.position, self.dimensions)
 
     @property
     def dimensions(self):
         return self._dimensions
 
 
-class Coord3d(object):
-
-    def __init__(self, coord=[0, 0, 0], *args, **kwargs):
-        """
-        Coord3d class constructor.
-        """
-        super().__init__(*args, **kwargs)
-        x, y, z = coord
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def __str__(self):
-        """
-        Prettily display a Coord3d object.
-        """
-        return "({0:.3f}, {1:.3f}, {2:.3f})".format(self.x, self.y, self.z)
-
-    def move(self, destination):
-        """
-        Change the coordinates.
-        """
-        self.__init__(destination)
-
-
-class Coord6d(object):
-
-    def __init__(self, coord=[0, 0, 0, 0, 0, 0], *args, **kwargs):
-        """
-        Coord6d class constructor.
-        """
-        super().__init__(*args, **kwargs)
-        x, y, z, alpha, beta, gamma = coord
-        self.x = x
-        self.y = y
-        self.z = z
-        self.spatial = [x, y, z]
-        self.alpha = alpha
-        self.beta = beta
-        self.gamma = gamma
-        self.angular = [alpha, beta, gamma]
-
-    def __str__(self):
-        """
-        Prettily display a Coord6d object.
-        """
-        return "({0:.3f}, {1:.3f}, {2:.3f}, {0:.3f}, {1:.3f}, {2:.3f})".format(
-                self.x, self.y, self.z, self.alpha, self.beta, self.gamma)
-
-    def move(self, destination):
-        """
-        Change the coordinates.
-        """
-        self.__init__(destination)
-
-    # def change_spatial(self, spatial):
-    #     """
-    #     Change the spatial coordinates.
-    #     """
-    #     self.spatial = spatial
-    #     self.x, self.y, self.z = spatial
-
-    # def change_angular(self, angular):
-    #     """
-    #     Change the angular coordinates.
-    #     """
-    #     self.angular = angular
-    #     self.alpha, self.beta, self.gamme = angular
-
+# TRAJECTORY
 
 class Trajectory(object):
 
@@ -230,71 +164,85 @@ class Trajectory(object):
         Trajectory class constructor.
         """
         super().__init__(*args, **kwargs)
-        self.name = "Initial"
-        self.array = array
+        # initial trajectory
+        self.initial_traj = array
         self.max_step = parameters.max_step
+        # discretized trajectory
+        self.discretized_traj_pos,\
+        self.discretized_traj_var = self.get_discretized(self.max_step)
+        # cables
+        self.cable_length,\
+        self.cable_var = self.get_cable(parameters)
+        # motor rotations
+        self.motor_rotation = self.get_rotation()
 
     def __str__(self):
         """
-        Prettily display a trajectory.
+        Prettily display a trajectory
         """
-        return "{} trajectory :\n".format(self.name) + str(self.array)
+        display = (
+            f"Initial trajectory:\n{self.initial_traj}\n"
+            f"Discretized trajectory:\n{self.discretized_traj_pos}\n"
+            f"Cable lengths:\n{self.cable_length}\n"
+            f"Cable var:\n{self.cable_var}\n"
+            f"Motor rotations:\n{self.motor_rotation}\n"
+        )
+        return display
 
-    def discretize(self):
+    def get_discretized(self, max_step):
         """
-        Disctretize a trajectory
+        Discretize a trajectory
         """
-        assert self.name == "Initial"
-        self.array = utils.discretize_traj(self.array, self.max_step)[0]
-        self.name = "Discretized"
+        return utils.discretize_traj(self.initial_traj, max_step)
 
-    # def dx(self, nb_steps, j):
-    #     """Returns the infinitesimal distance along the x direction
-    #     for the j-th interval of self."""
-    #     return (self.array[j+1][0] - self.array[j][0]) / nb_steps[j]
-
-    # def dy(self, nb_steps, j):
-    #     """Returns the infinitesimal distance along the y direction
-    #     for the j-th interval of self."""
-    #     return (self.array[j+1][1] - self.array[j][1]) / nb_steps[j]
-
-    # def dz(self, nb_steps, j):
-    #     """Returns the infinitesimal distance along the z direction
-    #     for the j-th interval of self."""
-    #     return (self.array[j+1][2] - self.array[j][2]) / nb_steps[j]
-
-    # def da(self, nb_steps, j):
-    #     """Returns the infinitesimal distance along the a direction
-    #     for the j-th interval of self."""
-    #     return (self.array[j+1][3] - self.array[j][3]) / nb_steps[j]
-
-    # def db(self, nb_steps, j):
-    #     """Returns the infinitesimal distance along the b direction
-    #     for the j-th interval of self."""
-    #     return (self.array[j+1][4] - self.array[j][4]) / nb_steps[j]
-
-    # def dg(self, nb_steps, j):
-    #     """Returns the infinitesimal distance along the g direction
-    #     for the j-th interval of self."""
-    #     return (self.array[j+1][5] - self.array[j][5]) / nb_steps[j]
-
-    def plot(self):
+    def get_cable(self, parameters):
         """
-        Plot a trajectory.
+        Transform a discretized trajectory into the motor cable lengths
         """
-        fig = plt.figure('{0} trajectory'.format(self.name))
-        fig.suptitle('{0} trajectory'.format(self.name))
-        # 3d graph
-        ax = fig.add_subplot(111, projection='3d')
-        xdata = self.array[:, 0]
-        ydata = self.array[:, 1]
-        zdata = self.array[:, 2]
-        ax.plot3D(xdata, ydata, zdata)
-        ax.scatter3D(xdata, ydata, zdata)
-        ax.set_xlabel('x')
-        ax.set_ylabel('y')
-        ax.set_zlabel('z')
-        # Table
-        # To do
-        # fig.savefig('pics/trajectoire_{0}.png'.format(self.name))
+        # return None, None
+        return utils.disc_to_cable_length(self.discretized_traj_pos,
+                                          parameters.dimensions_mobile,
+                                          parameters.dimensions_hangar)
+
+    def get_rotation(self):
+        """
+        Transform the motor cable lengths into the motor rotations
+        """
+        return None
+
+    def animate(self):
+        """
+        Animate a trajectory
+        """
+        print("Animating...")
+        save = False
+
+        def init():
+            """
+            Initialization function, background of each frame
+            """
+            trajectory.set_data([], [])
+            trajectory.set_3d_properties([])
+            return trajectory,
+
+        def update_fig(i):
+            """
+            Animation function
+            """
+            trajectory.set_data(self.discretized_traj_pos[0:i+1, 0], self.discretized_traj_pos[0:i+1, 1])
+            trajectory.set_3d_properties(self.discretized_traj_pos[0:i+1, 2])
+            return trajectory,
+
+        # setup
+        fig = plt.figure()
+        ax = p3.Axes3D(fig)
+        trajectory, = ax.plot([], [], [], marker='')
+        anim = animation.FuncAnimation(fig, update_fig,
+                                       frames=len(self.discretized_traj_pos),
+                                       interval=100,
+                                       blit=True)
+        # save and show
+        if save:
+            print("Saving gif...")
+            anim.save('trajectory.gif', fps=30)
         plt.show()

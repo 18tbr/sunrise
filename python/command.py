@@ -4,20 +4,21 @@ import math
 
 import modules.objects as obj
 
-# Trajectoire
-# array_trajectory = np.random.rand(10, 6)
-array_trajectory = np.array([[0, 0, 0, 0, 0, 0],
-                            [1, 1, 1, 0, 0, 0],
-                            [1, 1, 0, 0, 0, 0]])
+# Trajectory
+array_trajectory = np.random.rand(10, 6)
+# array_trajectory = np.array([[0, 0, 0, 0, 0, 0],
+#                              [1, 1, 1, 0, 0, 0],
+#                              [1, 1, 0, 0, 0, 0]], dtype=float)
 
 if __name__ == "__main__":
     parameters = obj.Parameters()
-    print(parameters)
+    # print(parameters)
     traj = obj.Trajectory(parameters, array_trajectory)
-    print(traj)
-    traj.discretize()
-    print(traj)
+    # print(traj)
+
     mobile = obj.Mobile(parameters)
-    for emplacement in traj.array:
+    for emplacement in traj.discretized_traj_pos:
         mobile.position = emplacement
         print(mobile)
+
+    traj.animate()
