@@ -81,9 +81,13 @@ int SerialClass::read() {
   }
 }
 
-void SerialClass::end() { 
-	close(this->connfd);
-	close(this->sockfd); 
+int SerialClass::readBytes(char *buffer, int length) {
+  return (int) recv(this->connfd, buffer, length, 0);
+}
+
+void SerialClass::end() {
+  close(this->sockfd);
+  close(this->connfd);
 }
 
 size_t SerialClass::print(const char *msg) {

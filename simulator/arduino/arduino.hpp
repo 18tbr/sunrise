@@ -44,6 +44,7 @@ public:
   void end();
   int available();
   int read();
+  int readBytes(char *buffer, int length);
   size_t print(const char *msg);
   size_t print(int msg);
   size_t println();
