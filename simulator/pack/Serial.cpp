@@ -82,7 +82,7 @@ int SerialClass::read() {
 }
 
 int SerialClass::readBytes(char *buffer, int length) {
-  return (int) recv(this->connfd, buffer, length, 0);
+  return (int)recv(this->connfd, buffer, length, 0);
 }
 
 void SerialClass::end() {
