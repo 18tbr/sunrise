@@ -2,9 +2,9 @@
 
 Le protocole est basé sur une gestion par événements de la communication.
 L'objectif de cette gestion est de résoudre le problème suivant : admettant
-que l'octet à envoyer pour arrêter la machine soit FF, comment distinguer le
-fait que l'hôte Python me demande de m'arréter du fait que l'hôte me
-transmette un bloc de données qui par hasard contient un FF.
+que l'octet à envoyer pour arrêter la machine soit 0xFF, comment distinguer le
+fait que l'hôte Python demande d'arrêter le robot du fait que l'hôte
+transmette un bloc de données qui par hasard contient un 0xFF.
 
 L'idée est de toujours envoyer des octets d'événements qui annoncent ce qui
 va suivre de sorte à ce qu'il ne soit jamais ambigue de savoir si un octet
@@ -43,7 +43,7 @@ substituer à quelque chose qui ne soit pas un événement.
             Python3          -- stop   (code 8)->            Arduino
             Python3          -- start  (code 9)->            Arduino
 ## Evénements valables pendant toute la communication
-            Python3          <-  AK   (code 10)->            Arduino
+            Python3          <-  ACK  (code 10)->            Arduino
             Python3          <- error (code 11)--            Arduino
 
 # Description des événements :
@@ -52,11 +52,11 @@ substituer à quelque chose qui ne soit pas un événement.
 
     Description: Cet événement est envoyé de Python3 vers la carte Arduino
     pour initier le protocole. La carte Arduino doit répondre à initial par un
-    AK.
+    ACK.
 
     Usage:
     Python3          --initial (code 2)->            Arduino
-    Python3          <-  AK   (code 10)--            Arduino
+    Python3          <-  ACK  (code 10)--            Arduino
 
 ## vitesse:
 
@@ -90,12 +90,12 @@ substituer à quelque chose qui ne soit pas un événement.
     contenant les positions initiales à donner aux moteurs. Cet événement est
     suivi par l'envoi du vecteur en question sous la forme de 8 entiers 32bits
     collés. Le code en Arduino doit répondre à la récéption de ce vecteur par
-    un AK.
+    un ACK.
 
     Usage:
     Python3          -- pos_0  (code 5)->            Arduino
     Python3          -- XXXXXXXX  (vec)->            Arduino
-    Python3          <-  AK   (code 10)--            Arduino
+    Python3          <-  ACK  (code 10)--            Arduino
 
 ## feed:
 
@@ -119,14 +119,14 @@ substituer à quelque chose qui ne soit pas un événement.
     bien passé, l'hôte Python3 doit alors envoyer à la carte tous les vecteurs
     promis sous la forme d'une suite de tableaux de 8 entiers 32bits. Une fois
     le nombre de vecteurs promis reçus, la carte Arduino devra répondre par un
-    AK.
+    ACK.
 
     Usage:
     Python3          -- data   (code 7)->            Arduino
     Python3          -- xxxx (4 octets)->            Arduino
     Python3          <- xxxx (4 octets)--            Arduino
     Python3          -- ****    (vecs) ->            Arduino
-    Python3          <-  AK   (code 10)--            Arduino
+    Python3          <-  ACK  (code 10)--            Arduino
 
 ## stop:
 
@@ -135,27 +135,29 @@ substituer à quelque chose qui ne soit pas un événement.
     être repris plus tard. Il ne s'agit pas d'un arrêt d'urgence comme dans le
     cas où l'on ferme la communication, il s'agit sujet de ne plus faire
     avancer les moteurs jusqu'à nouvel ordre. La carte Arduino devra répondre
-    à la récéption de cet événement par un AK.
+    à la récéption de cet événement par un ACK.
 
     Usage:
     Python3          -- stop   (code 8)->            Arduino
-    Python3          <-  AK   (code 10)--            Arduino
+    Python3          <-  ACK  (code 10)--            Arduino
 
 ## start:
 
     Description: Cet événement sert à reprendre un mouvement qui a été
-    interrompu par un stop et l'Arduino doit y répondre par un AK. Notez
+    interrompu par un stop et l'Arduino doit y répondre par un ACK. Notez
     qu'envoyer un start alors que la communication n'a pas été arrêtée par un
     stop constitue une faute de protocole.
 
     Usage:
     Python3          -- start  (code 9)->            Arduino
-    Python3          <-  AK   (code 10)--            Arduino
+    Python3          <-  ACK  (code 10)--            Arduino
 
-## AK:
+## ACK:
 
-    Description: AK (pour "Acknowledgment") est un événement envoyé à
-    divers moments dans le protocole pour valider une communication.
+    Description: ACK (pour "Acknowledgment") est un événement envoyé à
+    divers moments dans le protocole pour valider une communication. Notez que
+    le code que j'ai donné à ACK ne correspond pas au code ASCII (0x06) que je
+    ne connaissait pas.
 
 ## error:
 
