@@ -155,7 +155,7 @@ substituer à quelque chose qui ne soit pas un événement.
 ## AK:
 
     Description: AK (pour "Acknowledgment") est un événement envoyé à
-divers moments dans le protocole pour valider une communication.
+    divers moments dans le protocole pour valider une communication.
 
 ## error:
 
