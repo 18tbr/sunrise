@@ -42,7 +42,7 @@ substituer à quelque chose qui ne soit pas un événement.
             Python3          -- data   (code 7)->            Arduino
             Python3          -- stop   (code 8)->            Arduino
             Python3          -- start  (code 9)->            Arduino
-            # Evénements valables pendant toute la communication
+## Evénements valables pendant toute la communication
             Python3          <-  AK   (code 10)->            Arduino
             Python3          <- error (code 11)--            Arduino
 
