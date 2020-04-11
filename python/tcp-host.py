@@ -40,7 +40,7 @@ def bsend(value):
 def breceive(bufsize):
     """Receive a value and print it"""
     value = s.recv(bufsize)
-    print(f"[received] value: {value}")
+    print(f"[recv] value: {value}")
     return value
 
 
@@ -62,7 +62,7 @@ try:
     # Python3    -- xxxx (4 octets)->    Arduino
     # Python3    <- xxxx (4 octets)--    Arduino
     print("\n==== vitesse ====")
-    rcv_vitesse_evt = breceive(1024)            # (->) receive event
+    rcv_vitesse_evt = breceive(1)               # (->) receive event
     assert rcv_vitesse_evt == VITESSE           # (==) check if event is protocol
     rcv_vitesse_val = breceive(1024)            # (->) receive value
     bsend(rcv_vitesse_val)                      # (<-) send value echo
@@ -82,11 +82,12 @@ try:
     # Python3    -- XXXXXXXX  (vec)->    Arduino
     # Python3    <-  ACK  (code 10)--    Arduino
     print("\n==== pos_0 ====")
-    rcv_pos_0_evt = breceive(1024)              # (->) receive event
+    rcv_pos_0_evt = breceive(1)                 # (->) receive event
     assert rcv_pos_0_evt == POS_0               # (==) check if event is protocol
     rcv_pos_0_val = breceive(1024)              # (->) receive value
     bsend(rcv_pos_0_val)                        # (<-) send value echo
 
+    print(f"Finished")
 
 
 except IOError:

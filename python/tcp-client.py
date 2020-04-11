@@ -37,7 +37,7 @@ def bsend(value):
 def breceive(bufsize):
     """Receive a value and print it"""
     value = s.recv(bufsize)
-    print(f"[received] value: {value}")
+    print(f"[recv] value: {value}")
     return value
 
 
@@ -69,7 +69,7 @@ try:
     # Python3    <- xxxx (4 octets)--    Arduino
     # Python3    -- xxxx (4 octets)->    Arduino
     print("\n==== memoire ====")
-    rcv_memoire_evt = breceive(1024)            # (<-) receive event
+    rcv_memoire_evt = breceive(1)               # (<-) receive event
     assert rcv_memoire_evt == MEMOIRE           # (==) check if event echo is protocol
     rcv_memoire_val = breceive(1024)            # (<-) receive value
     bsend(rcv_memoire_val)                      # (->) send value echo
@@ -84,6 +84,7 @@ try:
     rcv_pos_0_val = breceive(1024)              # (<-) receive value echo
     assert rcv_pos_0_val == POS_0_VAL           # (==) check if value echo same as sent
 
+    print(f"Finished")
 
 
 except IOError:
