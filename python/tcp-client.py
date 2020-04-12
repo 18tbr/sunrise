@@ -24,9 +24,9 @@ PORT = 12800
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
     s.connect((HOST, PORT))
-    print(f"Successfully connected to Arduino on port {PORT}.\n")
+    print(f"\n! Successfully connected to Arduino on port {PORT}.\n")
 except:
-    print(f"Failed to connect to Arduino on port {PORT}.\n")
+    print(f"\n! Failed to connect to Arduino on port {PORT}.\n")
 
 
 # --------------- COMMUNICATION FUNCTIONS --------------- #

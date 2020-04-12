@@ -24,12 +24,12 @@ PORT = 12800
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.bind((HOST, PORT))
 socket.listen(10)
-print(f"Listening on port {PORT}")
+print(f"\n! Listening on port {PORT}...")
 try:
     s, infos_connexion = socket.accept()
-    print(f"Successfully connected to Python3 on port {PORT}.\n")
+    print(f"! Successfully connected to Python3 on port {PORT}.\n")
 except:
-    print(f"Failed to connect to Python3 on port {PORT}.\n")
+    print(f"! Failed to connect to Python3 on port {PORT}.\n")
 
 
 # --------------- COMMUNICATION FUNCTIONS --------------- #
