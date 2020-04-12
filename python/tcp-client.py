@@ -1,7 +1,8 @@
 import sys
 import socket
 
-# Correspondance events - codes
+
+# ------------------- EVENTS <=> CODES ------------------ #
 INITIAL = b'2'
 VITESSE = b'3'
 VITESSE_VAL = 20
@@ -17,7 +18,7 @@ ACK = b'a'
 ERROR = b'b'
 
 
-# TCP
+# ------------------------- TCP ------------------------- #
 HOST = "localhost"
 PORT = 12800
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,9 +29,9 @@ except:
     print(f"Failed to connect to Arduino on port {PORT}.\n")
 
 
-# COMMUNICATION FUNCTIONS
+# --------------- COMMUNICATION FUNCTIONS --------------- #
 
-# send and receive byte
+# BYTE
 
 def send_byte(byte_value):
     """Send a byte"""
@@ -43,7 +44,7 @@ def recv_byte(bufsize):
     print(f"[recv] byte: {byte_value}  (bufsize: {bufsize})")
     return byte_value
 
-# send and receive int
+# INT
 
 def send_int(int_value, nb_bytes):
     """Send an int"""
@@ -57,11 +58,10 @@ def recv_int(bufsize):
     return int_value
 
 
-# MAIN
-
+# ------------------------- MAIN ------------------------ #
 try:
     ### INITIALIZATION ###
-    print("\n## INITIALIZATION ##")
+    print("\n### INITIALIZATION ###")
 
     # ==== initial ==== #
     # Python3    --initial (code 2)->    Arduino
@@ -101,7 +101,7 @@ try:
     rcv_pos_0_val = recv_int(1024)              # (<-) receive value echo
     assert rcv_pos_0_val == POS_0_VAL           # (==) check if value echo same as sent
 
-    print("\n## FINISHED ##")
+    print("\n### FINISHED ###")
 
 
 except IOError:
