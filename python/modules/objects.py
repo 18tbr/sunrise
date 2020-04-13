@@ -37,6 +37,8 @@ class Parameters(object):
         self.max_step_alpha = math.radians(10)
         self.max_step_beta = math.radians(10)
         self.max_step_gamma = math.radians(10)
+        # drummotor diameter
+        self.drum_motor_diameter = .9       # cm
         # array
         self.max_step = np.array([self.max_step_x, self.max_step_y,
                                   self.max_step_z, self.max_step_alpha,
@@ -53,6 +55,7 @@ class Parameters(object):
         Display the parameters.
         """
         self.display_step()
+        self.display_motors()
         self.display_hangar()
         self.display_mobile()
         return ""
@@ -66,6 +69,10 @@ class Parameters(object):
                                                  self.typedim[dim//3],
                                                  self.max_step[dim],
                                                  self.units[dim//3]))
+
+    def display_motors(self):
+        """Display motors parameters."""
+        print(f"\nDrummotor diameter: {self.drum_motor_diameter} cm")
 
     def display_hangar(self):
         """Display hangar parameters."""
@@ -174,7 +181,8 @@ class Trajectory(object):
         self.cable_length,\
         self.cable_var = self.get_cable()
         # motor rotations
-        self.motor_rotation = self.get_rotation()
+        self.motor_rotation,\
+        self.motor_var = self.get_rotation()
 
     def __str__(self):
         """
@@ -193,14 +201,14 @@ class Trajectory(object):
         """
         Discretize a trajectory
         """
-        return utils.discretize_traj(self.initial_traj, self.parameters.max_step)
+        return utils.discretize_traj(self.initial_traj,
+                                     self.parameters.max_step)
 
     def get_cable(self):
         """
         Transform a discretized trajectory into the motor cable lengths
         """
-        # return None, None
-        return utils.disc_to_cable_length(self.discretized_traj_pos,
+        return utils.disc_to_cable_lengths(self.discretized_traj_pos,
                                           self.parameters.dimensions_mobile,
                                           self.parameters.dimensions_hangar)
 
@@ -208,14 +216,14 @@ class Trajectory(object):
         """
         Transform the motor cable lengths into the motor rotations
         """
-        return None
+        return utils.len_to_rotations(self.cable_var,
+                                      self.parameters.drum_motor_diameter)
 
     def animate(self, save):
         """
         Animate a trajectory
 
         To add:
-        - motor rotations
         - parameters of the movement?
         """
         print("Animating...")
@@ -226,6 +234,7 @@ class Trajectory(object):
         # Content of animated_list:
         # 1. 3D trajectory, [0];
         # 2. cable lengths, [1:9].
+        # 3. motor rotations, [9:17].
 
         # TRAJECTORY
         ax_traj = fig.add_subplot(121, projection='3d')
@@ -240,13 +249,23 @@ class Trajectory(object):
         animated_list.append(trajectory)
 
         # CABLES
-        ax_cable_len = fig.add_subplot(122)
+        ax_cable_len = fig.add_subplot(222)
         ax_cable_len.set_title(f"Cable lengths")
         plt.xlim((0, 1.5 * len(self.cable_length)))
         plt.ylim((.9 * np.min(self.cable_length), 1.1 * np.max(self.cable_length)))
         for cable_nb in range(8):
             cable, = ax_cable_len.plot([], [], label=f"cable {cable_nb}")
             animated_list.append(cable)
+        plt.legend()
+
+        # MOTOR ROTATIONS
+        ax_rot = fig.add_subplot(224)
+        ax_rot.set_title(f"Motor rotations")
+        plt.xlim((0, 1.5 * len(self.motor_rotation)))
+        plt.ylim((1.3 * np.min(self.motor_rotation), 1.3 * np.max(self.motor_rotation)))
+        for motor_nb in range(8):
+            motor, = ax_rot.plot([], [], label=f"motor {motor_nb}")
+            animated_list.append(motor)
         plt.legend()
 
         # SETUP
@@ -262,8 +281,14 @@ class Trajectory(object):
             animated_list[0].set_3d_properties(self.discretized_traj_pos[0:i+1, 2])
             # cables update
             for cable_nb in range(8):
-                animated_list[1 + cable_nb].set_data(range(i+1),
-                                                     self.cable_length[0:i+1, cable_nb])
+                animated_list[1 + cable_nb].set_data(
+                        range(i+1),
+                        self.cable_length[0:i+1, cable_nb])
+            # motors update
+            for motor_nb in range(8):
+                animated_list[1 + 8 + motor_nb].set_data(
+                        range(i+1),
+                        self.motor_rotation[0:i+1, motor_nb])
             return animated_list
 
         anim = animation.FuncAnimation(fig, update_fig,

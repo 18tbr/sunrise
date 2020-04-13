@@ -177,7 +177,7 @@ def pos_to_cable_length(position, dimensions_mobile, dimensions_hangar):
     return cable_length
 
 
-def disc_to_cable_length(discretized_traj, dimensions_mobile, dimensions_hangar):
+def disc_to_cable_lengths(discretized_traj, dimensions_mobile, dimensions_hangar):
     """
     cf commande_longueurs_cables
 
@@ -220,22 +220,31 @@ def disc_to_cable_length(discretized_traj, dimensions_mobile, dimensions_hangar)
     USING: - pos_to_cable_length
     """
 
-    nb_steps = len(discretized_traj)
-    nb_interval = nb_steps - 1
-    # cable length for each position
+    # 1. get cable lengths (applying np.vectorize to pos_to_cable_length)
+    mapping = lambda array: pos_to_cable_length(array, dimensions_mobile, dimensions_hangar)
+    cable_length = np.vectorize(mapping, signature='(m)->(n)')(discretized_traj)
 
-    cable_length = []
-    cable_var = []
-    for j in range(nb_steps):
-        # get each cable length for j
-
-        cable_length.append(pos_to_cable_length(discretized_traj[j],
-                                                dimensions_mobile,
-                                                dimensions_hangar))
-
-    for j in range(nb_interval):
-        # get each cable variation for j
-        cable_var.append(cable_length[j+1] - cable_length[j])
+    # 2. get cable variations from cable lengths (using np.diff)
+    cable_var = np.diff(cable_length, axis=0)
 
     print("Cable lengths computed")
     return np.array(cable_length), np.array(cable_var)
+
+
+def len_to_rotations(cable_var, drum_motor_diameter):
+    """
+    docstring to do
+    first variations, then rotation
+    """
+
+    nb_interval = len(cable_var)
+    # 1. get rotation variations (simple product)
+    motor_var = 2 * cable_var / drum_motor_diameter
+
+    # 2. get rotations from variations (using np.cumsum)
+    motor_rotation = np.zeros((len(cable_var) + 1, 8))
+    motor_rotation[1:] = np.cumsum(motor_var, axis=0, dtype=float)
+
+    print("Motor rotations computed")
+    return np.array(motor_rotation), motor_var
+
