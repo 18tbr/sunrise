@@ -47,7 +47,7 @@ def rotation(angular_vect):
     return np.dot(np.dot(Rx, Ry), Rz)
 
 
-def calcul_nb_steps(array, max_step):
+def calcul_nb_steps(initial_traj, max_step):
     """
     For each interval of the trajectory, gives the number of steps into which
     we are going to discretize it.
@@ -66,7 +66,7 @@ def calcul_nb_steps(array, max_step):
     :rtype: list [ , , ...]
     """
 
-    def calcul_nb_steps_interval(array, j):
+    def calcul_nb_steps_interval(initial_traj, j):
         """
         Gives the number of steps to do for one interval j.
         At first, we compute the number of steps needed for each dimension
@@ -75,20 +75,21 @@ def calcul_nb_steps(array, max_step):
         """
         nb_steps_dim = []
         for dim in range(6):
-            nb_steps_dim.append(abs(array[j+1][dim] -
-                                    array[j][dim]) / max_step[dim])
+            nb_steps_dim.append(abs(initial_traj[j+1][dim] -
+                                    initial_traj[j][dim]) / max_step[dim])
         return math.ceil(max(nb_steps_dim))
 
-    nb_interval = len(array) - 1
+    nb_interval = len(initial_traj) - 1
     nb_steps = []
-    for j in range(nb_interval):
-        nb_steps.append(calcul_nb_steps_interval(array, j))
 
-    assert len(array) - 1 == len(nb_steps)
+    for j in range(nb_interval):
+        nb_steps.append(calcul_nb_steps_interval(initial_traj, j))
+
+    assert len(initial_traj) - 1 == len(nb_steps)
     return nb_steps
 
 
-def discretize_traj(array, max_step):
+def discretize_traj(initial_traj, max_step):
     """
     Discretize the trajectory by cutting intervals into constant valued steps,
     of value inferior to max_step.
@@ -108,29 +109,29 @@ def discretize_traj(array, max_step):
     :return: points we have to go through; infinitesimal moves
     :rtype: (list, list)
     """
-    nb_steps = calcul_nb_steps(array, max_step)
-    nb_interval = len(array) - 1
+    nb_steps = calcul_nb_steps(initial_traj, max_step)
+    nb_interval = len(initial_traj) - 1
 
     traj_disc = []
     var_disc = []
     for j in range(nb_interval):
         # for each interval between 2 points of the trajectory
         nb_steps_j = nb_steps[j]
-        dx = (array[j+1][0] - array[j][0]) / nb_steps_j
-        dy = (array[j+1][1] - array[j][1]) / nb_steps_j
-        dz = (array[j+1][2] - array[j][2]) / nb_steps_j
-        da = (array[j+1][3] - array[j][3]) / nb_steps_j
-        db = (array[j+1][4] - array[j][4]) / nb_steps_j
-        dg = (array[j+1][5] - array[j][5]) / nb_steps_j
+        dx = (initial_traj[j+1][0] - initial_traj[j][0]) / nb_steps_j
+        dy = (initial_traj[j+1][1] - initial_traj[j][1]) / nb_steps_j
+        dz = (initial_traj[j+1][2] - initial_traj[j][2]) / nb_steps_j
+        da = (initial_traj[j+1][3] - initial_traj[j][3]) / nb_steps_j
+        db = (initial_traj[j+1][4] - initial_traj[j][4]) / nb_steps_j
+        dg = (initial_traj[j+1][5] - initial_traj[j][5]) / nb_steps_j
 
         for i in range(0, nb_steps[j]):
             # for each step
-            x = array[j][0] + i * dx
-            y = array[j][1] + i * dy
-            z = array[j][2] + i * dz
-            a = array[j][3] + i * da
-            b = array[j][4] + i * db
-            g = array[j][5] + i * dg
+            x = initial_traj[j][0] + i * dx
+            y = initial_traj[j][1] + i * dy
+            z = initial_traj[j][2] + i * dz
+            a = initial_traj[j][3] + i * da
+            b = initial_traj[j][4] + i * db
+            g = initial_traj[j][5] + i * dg
 
             traj_disc.append([x, y, z, a, b, g])
             var_disc.append([dx, dy, dz, da, db, dg])

@@ -166,7 +166,7 @@ class Hangar(Object3d):
 
 class Trajectory(object):
 
-    def __init__(self, parameters, array, *args, **kwargs):
+    def __init__(self, parameters, initial_traj, *args, **kwargs):
         """
         Trajectory class constructor.
 
@@ -175,7 +175,7 @@ class Trajectory(object):
         super().__init__(*args, **kwargs)
         self.parameters = parameters
         # initial trajectory
-        self.initial_traj = array
+        self.initial_traj = initial_traj
         # discretized trajectory
         self.discretized_traj_pos,\
         self.discretized_traj_var = self.get_discretized()
