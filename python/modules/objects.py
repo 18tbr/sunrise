@@ -37,12 +37,12 @@ class Parameters(object):
         self.max_step_alpha = math.radians(10)
         self.max_step_beta = math.radians(10)
         self.max_step_gamma = math.radians(10)
-        # drummotor diameter
-        self.drum_motor_diameter = .9       # cm
         # array
         self.max_step = np.array([self.max_step_x, self.max_step_y,
                                   self.max_step_z, self.max_step_alpha,
                                   self.max_step_beta, self.max_step_gamma])
+        # drummotor diameter
+        self.drum_motor_diameter = .9       # cm
         # display
         self.display = False
         self.dim6d = ['x', 'y', 'z', 'alpha', 'beta', 'gamma']
@@ -240,7 +240,10 @@ class Trajectory(object):
 
         # TRAJECTORY
         ax_traj = fig.add_subplot(121, projection='3d')
-        ax_traj.set_title(f"3D trajectory")
+        ax_traj.set_title("3D trajectory")
+        ax_traj.set_xlabel("x (cm)")
+        ax_traj.set_ylabel("y (cm)")
+        ax_traj.set_zlabel("z (cm)")
         xlim_traj = self.parameters.dimensions_hangar[0] / 2
         ylim_traj = self.parameters.dimensions_hangar[1] / 2
         zlim_traj = self.parameters.dimensions_hangar[2] / 2
@@ -252,7 +255,9 @@ class Trajectory(object):
 
         # CABLES
         ax_cable_len = fig.add_subplot(222)
-        ax_cable_len.set_title(f"Cable lengths")
+        ax_cable_len.set_title("Cable lengths")
+        ax_cable_len.set_xlabel("time (dt)")
+        ax_cable_len.set_ylabel("cable length (cm)")
         plt.xlim((0, 1.5 * len(self.cable_length)))
         plt.ylim((.9 * np.min(self.cable_length), 1.1 * np.max(self.cable_length)))
         for cable_nb in range(8):
@@ -263,6 +268,8 @@ class Trajectory(object):
         # MOTOR ROTATIONS
         ax_rot = fig.add_subplot(224)
         ax_rot.set_title(f"Motor rotations")
+        ax_rot.set_xlabel("time (dt)")
+        ax_rot.set_ylabel("motor rotation (rad)")
         plt.xlim((0, 1.5 * len(self.motor_rotation)))
         plt.ylim((1.3 * np.min(self.motor_rotation), 1.3 * np.max(self.motor_rotation)))
         for motor_nb in range(8):
