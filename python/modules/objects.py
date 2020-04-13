@@ -213,32 +213,41 @@ class Trajectory(object):
     def animate(self, save):
         """
         Animate a trajectory
+
+        To add:
+        - motor rotations
+        - parameters of the movement?
         """
         print("Animating...")
 
         # SETUP
-        fig = plt.figure(figsize=(10,6))
+        fig = plt.figure(num="Trajectory animation", figsize=(10,6))
         animated_list = []
-
-        # CABLES
-        ax2 = fig.add_subplot(122)
-        plt.xlim((0, 1.5*len(self.cable_length)))
-        plt.ylim((0, 1.1*np.max(self.cable_length)))
-        for cable_nb in range(8):
-            cable, = ax2.plot([], [], label=f"cable {cable_nb}")
-            animated_list.append(cable)
-        plt.legend()
+        # Content of animated_list:
+        # 1. 3D trajectory, [0];
+        # 2. cable lengths, [1:9].
 
         # TRAJECTORY
-        ax = fig.add_subplot(121, projection='3d')
-        xlim_traj = self.parameters.dimensions_hangar[0]/2
-        ylim_traj = self.parameters.dimensions_hangar[1]/2
-        zlim_traj = self.parameters.dimensions_hangar[2]/2
-        ax.set_xlim3d((-xlim_traj, xlim_traj))
-        ax.set_ylim3d((-ylim_traj, ylim_traj))
-        ax.set_zlim3d((-zlim_traj, zlim_traj))
-        trajectory, = ax.plot([], [], [], marker='')
+        ax_traj = fig.add_subplot(121, projection='3d')
+        ax_traj.set_title(f"3D trajectory")
+        xlim_traj = self.parameters.dimensions_hangar[0] / 2
+        ylim_traj = self.parameters.dimensions_hangar[1] / 2
+        zlim_traj = self.parameters.dimensions_hangar[2] / 2
+        ax_traj.set_xlim3d((-xlim_traj, xlim_traj))
+        ax_traj.set_ylim3d((-ylim_traj, ylim_traj))
+        ax_traj.set_zlim3d((-zlim_traj, zlim_traj))
+        trajectory, = ax_traj.plot([], [], [], marker='')
         animated_list.append(trajectory)
+
+        # CABLES
+        ax_cable_len = fig.add_subplot(122)
+        ax_cable_len.set_title(f"Cable lengths")
+        plt.xlim((0, 1.5 * len(self.cable_length)))
+        plt.ylim((.9 * np.min(self.cable_length), 1.1 * np.max(self.cable_length)))
+        for cable_nb in range(8):
+            cable, = ax_cable_len.plot([], [], label=f"cable {cable_nb}")
+            animated_list.append(cable)
+        plt.legend()
 
         # SETUP
         plt.tight_layout()
@@ -247,12 +256,14 @@ class Trajectory(object):
             """
             Animation function
             """
+            # trajectory update
+            animated_list[0].set_data(self.discretized_traj_pos[0:i+1, 0],
+                                      self.discretized_traj_pos[0:i+1, 1])
+            animated_list[0].set_3d_properties(self.discretized_traj_pos[0:i+1, 2])
             # cables update
             for cable_nb in range(8):
-                animated_list[cable_nb].set_data(range(i+1), self.cable_length[0:i+1, cable_nb])
-            # trajectory update
-            animated_list[-1].set_data(self.discretized_traj_pos[0:i+1, 0], self.discretized_traj_pos[0:i+1, 1])
-            animated_list[-1].set_3d_properties(self.discretized_traj_pos[0:i+1, 2])
+                animated_list[1 + cable_nb].set_data(range(i+1),
+                                                     self.cable_length[0:i+1, cable_nb])
             return animated_list
 
         anim = animation.FuncAnimation(fig, update_fig,
