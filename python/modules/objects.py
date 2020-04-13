@@ -216,39 +216,21 @@ class Trajectory(object):
         """
         print("Animating...")
 
-        def init():
-            """
-            Initialization function, background of each frame
-            """
-            trajectory.set_data([], [])
-            trajectory.set_3d_properties([])
-
-            # graph.set_data([], [])
-            return trajectory, cable1, cable2, cable3, cable4, cable5, cable6, cable7, cable8
-
-        def update_fig(i):
-            """
-            Animation function
-            """
-            trajectory.set_data(self.discretized_traj_pos[0:i+1, 0], self.discretized_traj_pos[0:i+1, 1])
-            trajectory.set_3d_properties(self.discretized_traj_pos[0:i+1, 2])
-            # print(self.cable_length[0:i+1, :])
-            # print(self.cable_length[0:i+1])
-            cable1.set_data(range(i+1), self.cable_length[0:i+1, 0])
-            cable2.set_data(range(i+1), self.cable_length[0:i+1, 1])
-            cable3.set_data(range(i+1), self.cable_length[0:i+1, 2])
-            cable4.set_data(range(i+1), self.cable_length[0:i+1, 3])
-            cable5.set_data(range(i+1), self.cable_length[0:i+1, 4])
-            cable6.set_data(range(i+1), self.cable_length[0:i+1, 5])
-            cable7.set_data(range(i+1), self.cable_length[0:i+1, 6])
-            cable8.set_data(range(i+1), self.cable_length[0:i+1, 7])
-            return trajectory, cable1, cable2, cable3, cable4, cable5, cable6, cable7, cable8
-
         # SETUP
         fig = plt.figure(figsize=(10,6))
+        animated_list = []
+
+        # CABLES
+        ax2 = fig.add_subplot(122)
+        plt.xlim((0, 1.5*len(self.cable_length)))
+        plt.ylim((0, 1.1*np.max(self.cable_length)))
+        for cable_nb in range(8):
+            cable, = ax2.plot([], [], label=f"cable {cable_nb}")
+            animated_list.append(cable)
+        plt.legend()
 
         # TRAJECTORY
-        ax = fig.add_subplot(1, 2, 1, projection='3d')
+        ax = fig.add_subplot(121, projection='3d')
         xlim_traj = self.parameters.dimensions_hangar[0]/2
         ylim_traj = self.parameters.dimensions_hangar[1]/2
         zlim_traj = self.parameters.dimensions_hangar[2]/2
@@ -256,25 +238,23 @@ class Trajectory(object):
         ax.set_ylim3d((-ylim_traj, ylim_traj))
         ax.set_zlim3d((-zlim_traj, zlim_traj))
         trajectory, = ax.plot([], [], [], marker='')
-        # vector = ax.quiver([0], [0], [0], [0], [1], [1])
-
-        # CABLES
-        ax2 = fig.add_subplot(1, 2, 2)
-        plt.xlim((0, 1.5*len(self.cable_length)))
-        plt.ylim((0, 1.1*np.max(self.cable_length)))
-        cable1, = ax2.plot([], [], label="1st cable")
-        cable2, = ax2.plot([], [], label="2nd cable")
-        cable3, = ax2.plot([], [], label="3rd cable")
-        cable4, = ax2.plot([], [], label="4th cable")
-        cable5, = ax2.plot([], [], label="5th cable")
-        cable6, = ax2.plot([], [], label="6th cable")
-        cable7, = ax2.plot([], [], label="7th cable")
-        cable8, = ax2.plot([], [], label="8th cable")
-        plt.legend()
-
+        animated_list.append(trajectory)
 
         # SETUP
         plt.tight_layout()
+
+        def update_fig(i):
+            """
+            Animation function
+            """
+            # cables update
+            for cable_nb in range(8):
+                animated_list[cable_nb].set_data(range(i+1), self.cable_length[0:i+1, cable_nb])
+            # trajectory update
+            animated_list[-1].set_data(self.discretized_traj_pos[0:i+1, 0], self.discretized_traj_pos[0:i+1, 1])
+            animated_list[-1].set_3d_properties(self.discretized_traj_pos[0:i+1, 2])
+            return animated_list
+
         anim = animation.FuncAnimation(fig, update_fig,
                                        frames=len(self.discretized_traj_pos),
                                        interval=10,

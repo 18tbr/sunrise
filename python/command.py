@@ -15,7 +15,7 @@ if __name__ == "__main__":
     parameters = obj.Parameters()
     # print(parameters)
     traj = obj.Trajectory(parameters, array_trajectory)
-    print(traj)
+    # print(traj)
 
     # mobile = obj.Mobile(parameters)
     # for emplacement in traj.discretized_traj_pos:
