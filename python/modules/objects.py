@@ -169,6 +169,8 @@ class Trajectory(object):
     def __init__(self, parameters, array, *args, **kwargs):
         """
         Trajectory class constructor.
+
+        to do: describe attributes
         """
         super().__init__(*args, **kwargs)
         self.parameters = parameters
@@ -179,7 +181,7 @@ class Trajectory(object):
         self.discretized_traj_var = self.get_discretized()
         # cables
         self.cable_length,\
-        self.cable_var = self.get_cable()
+        self.cable_var = self.get_length()
         # motor rotations
         self.motor_rotation,\
         self.motor_var = self.get_rotation()
@@ -204,20 +206,20 @@ class Trajectory(object):
         return utils.discretize_traj(self.initial_traj,
                                      self.parameters.max_step)
 
-    def get_cable(self):
+    def get_length(self):
         """
         Transform a discretized trajectory into the motor cable lengths
         """
-        return utils.disc_to_cable_lengths(self.discretized_traj_pos,
-                                          self.parameters.dimensions_mobile,
-                                          self.parameters.dimensions_hangar)
+        return utils.disc_to_length(self.discretized_traj_pos,
+                                    self.parameters.dimensions_mobile,
+                                    self.parameters.dimensions_hangar)
 
     def get_rotation(self):
         """
         Transform the motor cable lengths into the motor rotations
         """
-        return utils.len_to_rotations(self.cable_var,
-                                      self.parameters.drum_motor_diameter)
+        return utils.length_to_rotation(self.cable_var,
+                                        self.parameters.drum_motor_diameter)
 
     def animate(self, save):
         """
