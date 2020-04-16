@@ -17,6 +17,9 @@ START = b'9'
 ACK = b'a'
 ERROR = b'b'
 
+CHAR_SIZE = 1
+INT_SIZE = 4
+
 
 # ------------------------- TCP ------------------------- #
 HOST = "localhost"
@@ -36,28 +39,28 @@ except:
 
 # BYTE
 
-def send_byte(byte_value):
-    """Send a byte"""
-    s.send(byte_value)
-    print(f"[sent] byte: {byte_value}  (bytes:   1)")
+def send_char(char_value):
+    """Send a char"""
+    s.send(char_value)
+    print(f"[sent] char: {char_value}  (bytes: {CHAR_SIZE})")
 
-def recv_byte(bufsize):
-    """Receive a byte"""
-    byte_value = s.recv(bufsize)
-    print(f"[recv] byte: {byte_value}  (bufsize: {bufsize})")
-    return byte_value
+def recv_char():
+    """Receive a char"""
+    char_value = s.recv(CHAR_SIZE)
+    print(f"[recv] char: {char_value}  (bytes: {CHAR_SIZE})")
+    return char_value
 
 # INT
 
-def send_int(int_value, nb_bytes):
+def send_int(int_value):
     """Send an int"""
-    s.send(int_value.to_bytes(nb_bytes, byteorder=sys.byteorder))
-    print(f"[sent] int:  {int_value}    (bytes:   {nb_bytes})")
+    s.send(int_value.to_bytes(INT_SIZE, byteorder=sys.byteorder))
+    print(f"[sent] int:  {int_value}    (bytes: {INT_SIZE})")
 
-def recv_int(bufsize):
+def recv_int():
     """Receive an int"""
-    int_value = int.from_bytes(s.recv(bufsize), byteorder=sys.byteorder)
-    print(f"[recv] int:  {int_value}    (bufsize: {bufsize})")
+    int_value = int.from_bytes(s.recv(INT_SIZE), byteorder=sys.byteorder)
+    print(f"[recv] int:  {int_value}    (bytes: {INT_SIZE})")
     return int_value
 
 
@@ -70,28 +73,28 @@ try:
     # Python3    --initial (code 2)->    Arduino
     # Python3    <-  ACK  (code 10)--    Arduino
     print("\n==== initial ====")
-    rcv_initial_evt = recv_byte(1)              # (->) receive event
+    rcv_initial_evt = recv_char()               # (->) receive event
     assert rcv_initial_evt == INITIAL           # (==) check if event is protocol
-    send_byte(ACK)                              # (<-) send event echo
+    send_char(ACK)                              # (<-) send event echo
 
     # ==== vitesse ==== #
     # Python3    --vitesse (code 3)->    Arduino
     # Python3    -- xxxx (4 octets)->    Arduino
     # Python3    <- xxxx (4 octets)--    Arduino
     print("\n==== vitesse ====")
-    rcv_vitesse_evt = recv_byte(1)              # (->) receive event
+    rcv_vitesse_evt = recv_char()               # (->) receive event
     assert rcv_vitesse_evt == VITESSE           # (==) check if event is protocol
-    rcv_vitesse_val = recv_int(4)               # (->) receive value
-    send_int(rcv_vitesse_val, 4)                # (<-) send value echo
+    rcv_vitesse_val = recv_int()                # (->) receive value
+    send_int(rcv_vitesse_val)                   # (<-) send value echo
 
     # ==== memoire ==== #
     # Python3    <-mémoire (code 4)--    Arduino
     # Python3    <- xxxx (4 octets)--    Arduino
     # Python3    -- xxxx (4 octets)->    Arduino
     print("\n==== memoire ====")
-    send_byte(MEMOIRE)                          # (<-) send event
-    send_int(MEMOIRE_VAL, 4)                    # (<-) send value
-    rcv_memoire_val = recv_int(4)               # (->) receive value echo
+    send_char(MEMOIRE)                          # (<-) send event
+    send_int(MEMOIRE_VAL)                       # (<-) send value
+    rcv_memoire_val = recv_int()                # (->) receive value echo
     assert rcv_memoire_val == MEMOIRE_VAL       # (==) check if value echo same as sent
 
     # ==== pos_0 ==== #
@@ -99,10 +102,10 @@ try:
     # Python3    -- XXXXXXXX  (vec)->    Arduino
     # Python3    <-  ACK  (code 10)--    Arduino
     print("\n==== pos_0 ====")
-    rcv_pos_0_evt = recv_byte(1)                # (->) receive event
+    rcv_pos_0_evt = recv_char()                 # (->) receive event
     assert rcv_pos_0_evt == POS_0               # (==) check if event is protocol
-    rcv_pos_0_val = recv_int(1024)              # (->) receive value
-    send_int(rcv_pos_0_val, 1024)               # (<-) send value echo
+    rcv_pos_0_val = recv_int()                  # (->) receive value
+    send_int(rcv_pos_0_val)                     # (<-) send value echo
 
     print("\n### FINISHED ###")
 
