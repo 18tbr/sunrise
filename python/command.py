@@ -6,10 +6,15 @@ import modules.objects as obj
 
 # Trajectory
 # array_trajectory = 10 * np.random.rand(10, 6)
-array_trajectory = np.array([[0, 0, 0, 0, 0, 0],
-                             [0, 10, 10, 0, 0, 0],
-                             [10, 10, 10, 0, 0, 0],
-                             [10, 10, 0, 0, 0, 0]], dtype=float)
+array_trajectory = np.array(
+    [
+        [0, 0, 0, 0, 0, 0],
+        [0, 10, 10, 0, 0, 0],
+        [10, 10, 10, 0, 0, 0],
+        [10, 10, 0, 0, 0, 0],
+    ],
+    dtype=float,
+)
 
 if __name__ == "__main__":
     parameters = obj.Parameters()
