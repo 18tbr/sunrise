@@ -1,18 +1,30 @@
 # coding: utf8
+import numpy as np
+import math
 
-from objects import Mobile
+import modules.objects as obj
 
-# Déclaration des variables
-
-dimensions = [1, 2, 3]
-# trajectoire =
+# Trajectory
+# array_trajectory = 10 * np.random.rand(10, 6)
+array_trajectory = np.array(
+    [
+        [0, 0, 0, 0, 0, 0],
+        [0, 10, 10, 0, 0, 0],
+        [10, 10, 10, 0, 0, 0],
+        [10, 10, 0, 0, 0, 0],
+    ],
+    dtype=float,
+)
 
 if __name__ == "__main__":
-    mobile = Mobile(dimensions)
-    print(mobile.sommets)
+    parameters = obj.Parameters()
+    # print(parameters)
+    traj = obj.Trajectory(parameters, array_trajectory)
+    # print(traj)
 
-    # print(mobile.position.spatial)
-    # print(mobile.position.angle)
-    # mobile.move(1, 1, 1, 0, 0, 0)
-    # print(mobile.position.spatial)
-    # print(mobile.position.angle)
+    # mobile = obj.Mobile(parameters)
+    # for emplacement in traj.discretized_traj_pos:
+    #     mobile.position = emplacement
+    #     print(mobile)
+
+    traj.animate(save=False)
