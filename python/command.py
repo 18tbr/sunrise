@@ -12,6 +12,7 @@ array_trajectory = np.array(
         [0, 10, 10, 0, 0, 0],
         [10, 10, 10, 0, 0, 0],
         [10, 10, 0, 0, 0, 0],
+        [10, 0, 20, 0, 0, 0],
     ],
     dtype=float,
 )
@@ -27,4 +28,4 @@ if __name__ == "__main__":
     #     mobile.position = emplacement
     #     print(mobile)
 
-    traj.animate(save=False)
+    traj.animate(save=True)

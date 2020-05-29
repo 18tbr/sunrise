@@ -9,9 +9,7 @@ Math group repository.
     1.3. [ Push the codes ](#13-push-the-codes)
 2. [ Structure ](#2-structure)
 3. [ Coding conventions ](#3-coding-conventions)  
-    3.1. [ Documenting and commenting ](#31-documenting-and-commenting)
-4. [ Tests ](#4-tests)
-5. [ Pics ](#5-pics)
+4. [ Pics ](#5-pics)
 
 ## 1. How to
 
@@ -59,29 +57,11 @@ Don't forget to `git pull` each time you want to work on the codes!
 - `cable_robot.py`: test script so that the cli.py does not raise an error.
 - `command.py`: discretization and motors rotation computation, main script, called by `cli.py`;
 - `modules`:
-    - `decorators.py`: decorators for a cleaner code, it is ok if you don't look at it;
     - `objects.py`: classes needed for the `command.py` script;
     - `utils.py`: tools and mathematical functions used by `command.py`.
-- `mathPartie1`: deprecated, was a previous version of `command.py`;
-- `groupeMathSquelette`: deprecated, was a previous version of `command.py`;
 
-
-### 2.1. `cli.py`
-To do
-### 2.2. `command.py`
-To do
-### 2.3. `objects.py`
-To do
-### 2.4. `utils.py`
-
-We want to compute the number of steps in which we are going to divide each interval of the trajectory.
-For each interval, this number is
-`max(ceil(L_i/dx_i)_i)`
-where `i` in `[|1,6|]` is the dimension, `L_i` is the distance we want to do in the interval and `dx_i` is the maximum step authorized.
 
 ## 3. Coding conventions
-
-### 3.1. Documenting and commenting
 
 When a function is defined, we document it as follows:
 ```py
@@ -99,15 +79,8 @@ def fun(arg):
     pass
 ```
 
-## 4. Tests
 
-For now, no unittest has been implemented and the `.py` files in the `test/` folder are empty.
-To run the tests, type in a terminal:
-```bash
-python -m unittest
-```
-
-## 5. Pics
+## 4. Pics
 
 - motor numbering:
 
